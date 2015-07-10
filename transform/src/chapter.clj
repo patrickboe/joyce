@@ -15,12 +15,27 @@
       :attrs { :class "page",
                :title title}}))
 
-(def rewrite-chapter
-  (en/transformation
-    [:p]
-    (en/remove-class "newchapter")
+(defn make-protocol-relative [site]
+  (fn [n]
+    (let [href (:href (:attrs n))]
+      (assoc-in n [:attrs :href] (str "//" site "/" href)))))
 
-    [[:span (en/attr? :id)]]
-    cite-page))
+(defn rewrite-chapter [site]
+  (let [situate (make-protocol-relative site)]
+    (en/transformation
+
+      [:a]
+      (comp situate (en/remove-attr :id))
+
+      [:a.box-images]
+      (comp (en/remove-class "box-images") (en/set-attr :rel "sidebar"))
+
+      [:p]
+      (en/remove-class "newchapter")
+
+      [[:span (en/attr? :id)]]
+      cite-page)))
 
 (defn render [n] (apply str (en/emit* n)))
+
+(def rewrite-mobile-chapter (rewrite-chapter "m.joyceproject.com"))
