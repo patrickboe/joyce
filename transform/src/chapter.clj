@@ -1,6 +1,5 @@
 (ns chapter
   (:require [net.cgrand.enlive-html :as en]
-            [clojure.java.io :as io]
             [clojure.string :as st]))
 
 (defn cite-page [n]
@@ -19,8 +18,7 @@
 
 (def categorize identity)
 
-(defn lookup [id db]
-  "ireland")
+(defn lookup [id db] (db id))
 
 (defn apply-link-category [database]
   (fn [n]
@@ -44,12 +42,3 @@
 
       [[:span (en/attr? :id)]]
       cite-page)))
-
-(defn render [n] (apply str (en/emit* n)))
-
-(def rewrite-mobile-chapter (rewrite-chapter "m.joyceproject.com" nil))
-
-(def proteus (as-file "/home/patrick/dev/proj/joyce/prototype/simple/ulysses/telemachus.htm"))
-
-(def proteus-node (en/html-resource proteus))
-
