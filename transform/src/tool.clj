@@ -10,15 +10,12 @@
 
 (def target "/home/patrick/dev/proj/joyce/dist")
 
-(def rerender-chapter
-  (rerender (rewrite-chapter "m.joyceproject.com" link-codes)))
-
 (defn direct-chapter [t]
   (fn [{n :name c :content}]
-      (struct finfo (route-chapter t n) (rerender-chapter c))))
-
-(def rewritten
-  (map (direct-chapter target) (read-contents (source-chapters source))))
+      (struct finfo
+              (route-chapter t n)
+              ((rerender
+                 (rewrite-chapter "m.joyceproject.com" link-codes)) c))))
 
 (def direct (partial map (direct-chapter target)))
 
