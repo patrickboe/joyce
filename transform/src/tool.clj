@@ -12,10 +12,12 @@
 
 (defn direct-chapter [t]
   (fn [{n :name c :content}]
-      (struct finfo
-              (route-chapter t n)
-              ((rerender
-                 (rewrite-chapter "m.joyceproject.com" link-codes)) c))))
+      (let [title (chapter-name n)]
+        (struct finfo
+          (route-chapter t n)
+          ((rerender
+             (rewrite-chapter "m.joyceproject.com" link-codes title))
+             c)))))
 
 (def direct (partial map (direct-chapter target)))
 

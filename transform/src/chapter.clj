@@ -11,6 +11,12 @@
       :attrs { :class "page",
                :title title}}))
 
+(defn wrap-main [title]
+  (fn [{c :content}]
+    { :tag :body,
+      :content [{:tag :main,
+                 :content (cons {:tag :h1, :content title} c)}] }))
+
 (defn make-protocol-relative [site]
   (fn [n]
     (let [href (:href (:attrs n))]
@@ -25,10 +31,12 @@
     (let [id (:id (:attrs n))]
       ((en/add-class (categorize (lookup id database))) n))))
 
-(defn rewrite-chapter [site database]
+(defn rewrite-chapter [site database title]
   (let [situate (make-protocol-relative site)
         code-link (apply-link-category database)]
     (en/transformation
+      [:body]
+      (wrap-main title)
 
       [:a.box-images]
       (comp situate
