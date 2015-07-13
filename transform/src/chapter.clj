@@ -11,11 +11,10 @@
       :attrs { :class "page",
                :title title}}))
 
-(defn wrap-main [title]
-  (fn [{c :content}]
+(defn wrap-main [{c :content}]
     { :tag :body,
       :content [{:tag :main,
-                 :content (cons {:tag :h1, :content title} c)}] }))
+                 :content c}] })
 
 (defn make-protocol-relative [site]
   (fn [n]
@@ -36,7 +35,8 @@
         code-link (apply-link-category database)]
     (en/transformation
       [:body]
-      (wrap-main title)
+      (comp (en/prepend {:tag :h1, :content title})
+            wrap-main)
 
       [:a.box-images]
       (comp situate
