@@ -30,10 +30,21 @@
     (let [id (:id (:attrs n))]
       ((en/add-class (categorize (lookup id database))) n))))
 
+(en/defsnippet chapter-head "head.html" [:head] [context]
+  [:title] (en/content (:title context))
+  [[:meta (en/attr? :description)]] (en/set-attr :content (:description context)))
+
 (defn rewrite-chapter [site database title]
   (let [situate (make-protocol-relative site)
         code-link (apply-link-category database)]
     (en/transformation
+      [:html]
+      (comp (en/prepend
+              (chapter-head
+                { :title title,
+                  :description "some description" }))
+            (en/set-attr :lang "en"))
+
       [:body]
       (comp (en/prepend {:tag :h1, :content title})
             wrap-main)
