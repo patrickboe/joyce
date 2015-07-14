@@ -1,4 +1,5 @@
 (ns chapter
+  (:use edits)
   (:require [net.cgrand.enlive-html :as en]
             [clojure.string :as st]))
 
@@ -16,17 +17,8 @@
       :content [{:tag :main,
                  :content c}] })
 
-(defn use-html-extension [href] (str href "l"))
-
-(defn make-protocol-relative [site]
-  (fn [href] (str "//" site "/" href)))
-
 (defn situate-in [site]
-  (let [rewrite-notes-link
-        (comp use-html-extension (make-protocol-relative site))]
-    (fn [n]
-      (let [href (:href (:attrs n))]
-        (assoc-in n [:attrs :href] (rewrite-notes-link href))))))
+  (transform-attr :href site))
 
 (def categorize identity)
 

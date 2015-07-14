@@ -11,3 +11,11 @@
 (defn source-chapters [s] (str s "/chap/"))
 
 (defn chapter-name [path] (docname path))
+
+(defn use-html-extension [href] (str href "l"))
+
+(defn make-protocol-relative [host]
+  (fn [href] (str "//" host "/" href)))
+
+(defn linker [host]
+  (comp use-html-extension (make-protocol-relative host)))
