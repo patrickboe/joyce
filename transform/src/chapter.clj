@@ -16,33 +16,42 @@
       :content [{:tag :main,
                  :content c}] })
 
+(defn use-html-extension [href] (str href "l"))
+
 (defn make-protocol-relative [site]
-  (fn [n]
-    (let [href (:href (:attrs n))]
-      (assoc-in n [:attrs :href] (str "//" site "/" href)))))
+  (fn [href] (str "//" site "/" href)))
+
+(defn situate-in [site]
+  (let [rewrite-notes-link
+        (comp use-html-extension (make-protocol-relative site))]
+    (fn [n]
+      (let [href (:href (:attrs n))]
+        (assoc-in n [:attrs :href] (rewrite-notes-link href))))))
 
 (def categorize identity)
 
-(defn lookup [id db] (db id))
+(defn lookup [k table db] ((db table) k))
 
 (defn apply-link-category [database]
   (fn [n]
     (let [id (:id (:attrs n))]
-      ((en/add-class (categorize (lookup id database))) n))))
+      ((en/add-class (categorize (lookup id :notes database))) n))))
+
+(defn lookup-title [database docname]
+  (lookup docname :chapters database))
 
 (en/defsnippet chapter-head "head.html" [:head] [context]
-  [:title] (en/content (:title context))
-  [[:meta (en/attr? :description)]] (en/set-attr :content (:description context)))
+  [:title] (en/append (str " : " (:title context))))
 
-(defn rewrite-chapter [site database title]
-  (let [situate (make-protocol-relative site)
-        code-link (apply-link-category database)]
+(defn rewrite-chapter [site database docname]
+  (let [situate (situate-in site)
+        code-link (apply-link-category database)
+        title (lookup-title database docname)]
+
     (en/transformation
       [:html]
       (comp (en/prepend
-              (chapter-head
-                { :title title,
-                  :description "some description" }))
+              (chapter-head { :title title }))
             (en/set-attr :lang "en"))
 
       [:body]

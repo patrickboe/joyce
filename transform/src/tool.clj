@@ -10,13 +10,15 @@
 
 (def target "/home/patrick/dev/proj/joyce/dist")
 
+(def site "home/patrick/dev/proj/joyce/dist")
+
 (defn direct-chapter [t]
   (fn [{n :name c :content}]
       (let [title (chapter-name n)]
         (struct finfo
           (route-chapter t n)
           ((rerender
-             (rewrite-chapter "m.joyceproject.com" link-codes title))
+             (rewrite-chapter site site-data title))
              c)))))
 
 (def direct (partial map (direct-chapter target)))
