@@ -27,6 +27,16 @@
     (change-tag :figcaption)
     (en/remove-attr :class)))
 
+(defn wrap-content
+ ([tag] (wrap-content tag nil))
+ ([tag attrs]
+   (fn [n]
+     (assoc n :content
+            (en/as-nodes (array-map
+              :tag tag
+              :attrs attrs
+              :content (:content n)))))))
+
 (defn situate-image [site]
   (let [situate-img-link (situate-in site)
         situate-img-src (transform-attr :src site)]
@@ -82,7 +92,7 @@
 
     (comp
 
-     to-html5-doctype
+     rest
 
      (en/transformation
        [:html]
@@ -96,6 +106,9 @@
 
        [:div#images]
        rewrite-images
+
+       [:body]
+       (wrap-content :main)
 
        [:head]
        use-title-in-standard-head))))
