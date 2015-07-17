@@ -3,6 +3,7 @@
     [rendering]
     [routing]
     [files]
+    [note :only [rewrite-note]]
     [chapter :only [rewrite-chapter]]
     [codes]))
 
@@ -28,3 +29,8 @@
 (defn calc-sources [] (source-chapters source))
 
 (def exec (comp write-all direct read-contents calc-sources))
+
+(def render-note (rerender (rewrite-note (linker host))))
+
+(def dring
+  (net.cgrand.enlive-html/html-resource (clojure.java.io/as-file "/home/patrick/dev/proj/joyceproject_archive/notes/030018dringdring.htm")))

@@ -9,11 +9,15 @@
   (transform-attr
     :href
     (fn [href]
-      (if (relative? href) (site href) n))))
+      (if (relative? href) (site href) href))))
 
-(en/defsnippet keep-only-title "head.html" [n]
-  (let [note-title (en/select n [:title en/first-child] n)]
-    [:title] (en/append (str " : " note-title))))
+(en/defsnippet head-with "head.html" [:head] [d]
+  [:title]
+  (en/append (str " : " (:title d))))
+
+(defn use-title-in-standard-head [n]
+  (head-with { :title
+               (first (en/select n [:title en/text-node])) }))
 
 (defn change-tag [t]
   (fn [n] (assoc n :tag t)))
@@ -21,7 +25,7 @@
 (def to-caption
   (comp
     (change-tag :figcaption)
-    (remove-attr :class)))
+    (en/remove-attr :class)))
 
 (defn situate-image [site]
   (let [situate-img-link (situate-in site)
@@ -33,18 +37,19 @@
     [:img]
     situate-img-src)))
 
-(defn to-figure [[img caption]]
-  { :tag :figure,
-    :content [(situate-image img)
-              (to-caption caption)]})
+(defn rewrite-image-section [site]
+  (let [situate (situate-image site)
 
-(defn replace-with-figures [n]
-  (map to-figure (partition 2 n)))
+        to-fig (fn [[img caption]]
+             { :tag :figure,
+               :content (list (situate img) (to-caption caption))})
 
-(def rewrite-image-section
-  (en/transformation
-    [:div :> :*]
-    replace-with-figures))
+        to-figures #(map to-fig (partition 2 %))]
+
+    (fn [n] (to-figures
+              (en/select
+                (:content n)
+                [(en/but en/text-node)])))))
 
 (defn rewrite-note-text-for [site]
   (let [situate (situate-in site)]
@@ -68,27 +73,29 @@
       [:a]
       situate)))
 
-(defn rewrite-note [site database docname]
-  (let [rewrite-note-text (rewrite-note-text-for site)]
+(defn to-html5-doctype [[dt & r]]
+  (cons (assoc dt :data ["html"]) r))
 
-    (en/transformation
-      [:html]
-      (en/remove-attr :xmlns)
+(defn rewrite-note [site]
+  (let [rewrite-text (rewrite-note-text-for site)
+        rewrite-images (rewrite-image-section site)]
 
-      [:div#button]
-      (en/substitute nil)
+    (comp
 
-      [:body :> *]
-      (wrap :main)
+     to-html5-doctype
 
-      [:div.note-container]
-      (comp
-        unwrap
-        rewrite-note-text)
+     (en/transformation
+       [:html]
+       (en/do-> (en/set-attr :lang "en")
+                (en/remove-attr :xmlns))
 
-      [:div#images]
-      (comp unwrap
-            rewrite-image-section)
+       [:div#button] nil
 
-      [:head]
-      keep-only-title)))
+       [:div.note-container]
+       (en/do-> rewrite-text en/unwrap)
+
+       [:div#images]
+       rewrite-images
+
+       [:head]
+       use-title-in-standard-head))))
