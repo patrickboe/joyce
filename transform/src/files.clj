@@ -6,8 +6,8 @@
 
 (defn read-contents [dir]
   (map get-info
-       (filter #(.isFile %)
-               (rest (file-seq (io/file dir))))))
+    (filter #(.isFile %)
+      (. (io/file dir) listFiles))))
 
 (defn write-out [{n :name c :content}]
   (spit n c))

@@ -2,14 +2,16 @@
   (:use edits)
   (:require [net.cgrand.enlive-html :as en]))
 
-(defn relative? [url]
-  (not (.isAbsolute (java.net.URI. url))))
+(defn situate-relative [site]
+  (fn [href]
+      (when-let [uri
+                 (try (java.net.URI. href)
+                      (catch java.net.URISyntaxException e nil))]
+        (if (not (.isAbsolute uri)) (site href) href))))
 
 (defn situate-in [site]
-  (transform-attr
-    :href
-    (fn [href]
-      (if (relative? href) (site href) href))))
+  (let [sit-rel (situate-relative site)]
+    (transform-attr :href sit-rel (comp first en/unwrap))))
 
 (en/defsnippet head-with "head.html" [:head] [d]
   [:title]

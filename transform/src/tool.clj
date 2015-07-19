@@ -12,7 +12,7 @@
 
 (def target "/home/patrick/dev/proj/joyce/dist")
 
-(def tool-linker (linker (subs target 1)))
+(def tool-linker (linker (str "localhost" target)))
 
 (defn direct-note [t]
   (fn [{n :name c :content}]
