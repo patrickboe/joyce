@@ -14,8 +14,7 @@
   (first (tokenized-filename path)))
 
 (defn route-chapter [target path]
-  (str target "/chapters/" (docname path) ".html"))
-
+  (str target "/chapters/" (docname path) ".html")) 
 (defn route-note [target path]
   (str target "/notes/" (docname path) ".html") )
 

@@ -8,17 +8,17 @@
     [chapter :only [rewrite-chapter]]
     [codes]))
 
-(def source "/home/patrick/dev/proj/joyceproject_archive")
+(def source "/home/patrick/dev/proj/joyce/orig")
 
 (def target "/home/patrick/dev/proj/joyce/dist")
 
-(def host "home/patrick/dev/proj/joyce/dist")
+(def tool-linker (linker (subs target 1)))
 
 (defn direct-note [t]
   (fn [{n :name c :content}]
     (struct finfo
             (route-note t n)
-            ((rerender (rewrite-note (linker host))) c))))
+            ((rerender (rewrite-note tool-linker)) c))))
 
 (defn direct-chapter [t]
   (fn [{n :name c :content}]
@@ -26,7 +26,7 @@
         (struct finfo
           (route-chapter t n)
           ((rerender
-             (rewrite-chapter (linker host) site-data title))
+             (rewrite-chapter tool-linker site-data title))
              c)))))
 
 (defn direct [[note-files chapter-files]]
@@ -44,10 +44,3 @@
         direct
         (partial map read-contents)
         calc-sources))
-
-(def render-note (rerender (rewrite-note (linker host))))
-
-(defn sample [n]
-  (en/html-resource (clojure.java.io/as-file (str "/home/patrick/dev/proj/joyceproject_archive/notes/" n))))
-
-(def dring (sample "030018dringdring.htm"))
