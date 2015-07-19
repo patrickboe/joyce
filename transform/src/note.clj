@@ -52,14 +52,16 @@
 
         to-fig (fn [[img caption]]
              { :tag :figure,
-               :content (list (situate img) (to-caption caption))})
+               :content (list
+                          (first (situate img))
+                          (to-caption caption))})
 
         to-figures #(map to-fig (partition 2 %))]
 
     (fn [n] (to-figures
               (en/select
-                (:content n)
-                [(en/but en/text-node)])))))
+                n
+                [:div :> (en/but en/text-node)])))))
 
 (defn rewrite-note-text-for [site]
   (let [situate (situate-in site)]

@@ -1,4 +1,5 @@
 (ns tool
+  (:require [ net.cgrand.enlive-html :as en])
   (:use
     [rendering]
     [routing]
@@ -13,6 +14,12 @@
 
 (def host "home/patrick/dev/proj/joyce/dist")
 
+(defn direct-note [t]
+  (fn [{n :name c :content}]
+    (struct finfo
+            (route-note t n)
+            ((rerender (rewrite-note (linker host))) c))))
+
 (defn direct-chapter [t]
   (fn [{n :name c :content}]
       (let [title (chapter-name n)]
@@ -22,15 +29,25 @@
              (rewrite-chapter (linker host) site-data title))
              c)))))
 
-(def direct (partial map (direct-chapter target)))
+(defn direct [[note-files chapter-files]]
+  (list
+    (map (direct-note target) note-files)
+    (map (direct-chapter target) chapter-files)))
 
-(def write-all (partial map write-out))
+(def write-all (partial map (partial map write-out)))
 
-(defn calc-sources [] (source-chapters source))
+(defn calc-sources []
+  (list (source-notes source) (source-chapters source)))
 
-(def exec (comp write-all direct read-contents calc-sources))
+(def exec
+  (comp write-all
+        direct
+        (partial map read-contents)
+        calc-sources))
 
 (def render-note (rerender (rewrite-note (linker host))))
 
-(def dring
-  (net.cgrand.enlive-html/html-resource (clojure.java.io/as-file "/home/patrick/dev/proj/joyceproject_archive/notes/030018dringdring.htm")))
+(defn sample [n]
+  (en/html-resource (clojure.java.io/as-file (str "/home/patrick/dev/proj/joyceproject_archive/notes/" n))))
+
+(def dring (sample "030018dringdring.htm"))
