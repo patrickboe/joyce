@@ -58,14 +58,21 @@
 
 (defn chapter-name [path] (docname path))
 
-(defn rewrite-url [url]
-  (case (extension url)
-    "htm" (str url "l")
-    ("jpg" "png" "gif" "jpeg") (rewrite-img-url url)
-    url))
+(defn rewrite-url [section-rewriter]
+  (fn [url]
+    (case (extension url)
+      "htm" (section-rewriter (str url "l"))
+      ("jpg" "png" "gif" "jpeg") (rewrite-img-url url)
+      (section-rewriter url))))
 
 (defn make-protocol-relative [host]
   (fn [url] (str "//" host "/" url)))
 
+(defn section-linker [host reroute]
+  (comp (make-protocol-relative host) (rewrite-url reroute)))
+
 (defn linker [host]
-  (comp (make-protocol-relative host) rewrite-url))
+  { :chapters
+    (section-linker host identity)
+    :notes
+    (section-linker host #(str "notes/" %)) })

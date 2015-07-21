@@ -12,13 +12,13 @@
 
 (def target "/home/patrick/dev/proj/joyce/dist")
 
-(def tool-linker (linker (str "localhost" target)))
+(def linkers (linker (str "localhost" target)))
 
 (defn direct-note [t]
   (fn [{n :name c :content}]
     (struct finfo
             (route-note t n)
-            ((rerender (rewrite-note tool-linker)) c))))
+            ((rerender (rewrite-note (:notes linkers))) c))))
 
 (defn direct-chapter [t]
   (fn [{n :name c :content}]
@@ -26,15 +26,13 @@
         (struct finfo
           (route-chapter t n)
           ((rerender
-             (rewrite-chapter tool-linker site-data title))
+             (rewrite-chapter (:chapters linkers) site-data title))
              c)))))
 
 (defn direct [[note-files chapter-files]]
-  (list
+  (concat
     (map (direct-note target) note-files)
     (map (direct-chapter target) chapter-files)))
-
-(def write-all (partial map (partial map write-out)))
 
 (defn calc-sources [s]
   (list (source-notes s) (source-chapters s)))
@@ -46,16 +44,15 @@
        calc-sources
        (map read-contents)
        direct
-       write-all))
+       (map write-out)
+       dorun))
 
 (defn migrate-assets []
   (->> source
        source-images
        list-contents
        router
-       (map (partial apply cp))))
+       (map (partial apply cp))
+       dorun))
 
-(defn exec []
-  (do
-    (migrate-text)
-    (migrate-assets)))
+(defn exec [] (migrate-text) (migrate-assets))

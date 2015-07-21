@@ -18,7 +18,7 @@
        (only-files (file-seq (io/file dir)))))
 
 (defn write-out [{n :name c :content}]
-  (spit n c))
+  (FileUtils/writeStringToFile (io/file n) c "UTF-8"))
 
 (defn cp [from to]
   (FileUtils/copyFile (io/file from) (io/file to)))
