@@ -14,7 +14,7 @@
 (def site-data
   { :notes always-notes,
     :chapters
-      { "telemachus" "Telemachus",
+      { "telem" "Telemachus",
         "nestor" "Nestor",
         "proteus" "Proteus",
         "calypso" "Calypso",
