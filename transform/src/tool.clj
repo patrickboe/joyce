@@ -36,11 +36,26 @@
 
 (def write-all (partial map (partial map write-out)))
 
-(defn calc-sources []
-  (list (source-notes source) (source-chapters source)))
+(defn calc-sources [s]
+  (list (source-notes s) (source-chapters s)))
 
-(def exec
-  (comp write-all
-        direct
-        (partial map read-contents)
-        calc-sources))
+(def router (route-images source target))
+
+(defn migrate-text []
+  (->> source
+       calc-sources
+       (map read-contents)
+       direct
+       write-all))
+
+(defn migrate-assets []
+  (->> source
+       source-images
+       list-contents
+       router
+       (map (partial apply cp))))
+
+(defn exec []
+  (do
+    (migrate-text)
+    (migrate-assets)))

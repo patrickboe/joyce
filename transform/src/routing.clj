@@ -15,14 +15,21 @@
 
 (defn route-chapter [target path]
   (str target "/chapters/" (docname path) ".html")) 
+
 (defn route-note [target path]
   (str target "/notes/" (docname path) ".html") )
 
-(def source-chapters #(str % "/chap/"))
+(defn image? [path]
+  (case (extension path) ("jpg" "png" "gif" "jpeg") true false))
 
-(def source-notes #(str % "/notes/"))
+(defn reroot-with [source target f]
+  (let [source-pattern (re-pattern (str source "(.+)"))]
+    (fn [path]
+      (let [[_ inner] (re-find source-pattern path)]
+        (if-let [newinner (f inner)] (str target "/" newinner))))))
 
-(defn chapter-name [path] (docname path))
+(defn difmap [f xs]
+  (map (fn [x] (list x (f x))) xs))
 
 (defn rename-img-dir [d]
   (case d
@@ -31,10 +38,25 @@
     d))
 
 (defn rewrite-img-url [url]
-  (let [ [_ ep img] (re-find #"episode_(\d+)_images/(.+)" url)
-         [d & r] (path-parts img)
-         nudoc (st/join "/" (cons (rename-img-dir d) r)) ]
-    (str "images/for-chapter/" ep "/" nudoc)))
+  (if-let [[_ ep img] (re-find #"episode_(\d+)_images/(.+)" url)]
+    (let [ [d & r] (path-parts img)
+          nudoc (st/join "/" (cons (rename-img-dir d) r)) ]
+      (str "images/for-chapter/" ep "/" nudoc))))
+
+(defn has-target? [[s t]] t)
+
+(defn route-images [source target]
+  (let [rt (reroot-with source target rewrite-img-url)]
+    (fn [paths]
+      (filter has-target? (difmap rt (filter image? paths))))))
+
+(def source-chapters #(str % "/chap/"))
+
+(def source-notes #(str % "/notes/"))
+
+(def source-images #(str % "/notes/"))
+
+(defn chapter-name [path] (docname path))
 
 (defn rewrite-url [url]
   (case (extension url)
