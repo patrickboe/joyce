@@ -1,6 +1,8 @@
 (ns note
-  (:use edits)
-  (:require [net.cgrand.enlive-html :as en]))
+  (:require
+    [edits]
+    [routing]
+    [net.cgrand.enlive-html :as en]))
 
 (defn situate-relative [site]
   (fn [href]
@@ -11,7 +13,7 @@
 
 (defn situate-in [site]
   (let [sit-rel (situate-relative site)]
-    (transform-attr :href sit-rel (comp first en/unwrap))))
+    (edits/transform-attr :href sit-rel (comp first en/unwrap))))
 
 (en/defsnippet head-with "head.html" [:head] [d]
   [:title]
@@ -41,7 +43,7 @@
 
 (defn situate-image [site]
   (let [situate-img-link (situate-in site)
-        situate-img-src (transform-attr :src site)]
+        situate-img-src (edits/transform-attr :src site)]
    (en/transformation
     [:a]
     situate-img-link
@@ -90,8 +92,9 @@
 (defn to-html5-doctype [[dt & r]]
   (cons (assoc dt :data ["html"]) r))
 
-(defn rewrite-note [site]
-  (let [rewrite-text (rewrite-note-text-for site)
+(defn rewrite-note [router]
+  (let [site (:rewrite-url router)
+        rewrite-text (rewrite-note-text-for site)
         rewrite-images (rewrite-image-section site)]
 
     (comp

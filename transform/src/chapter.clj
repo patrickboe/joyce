@@ -1,7 +1,8 @@
 (ns chapter
-  (:use edits)
   (:require [net.cgrand.enlive-html :as en]
-            [clojure.string :as st]))
+            [clojure.string :as st]
+            [edits]
+            [routing]))
 
 (defn cite-page [n]
   (let [span-id (:id (:attrs n))
@@ -18,7 +19,7 @@
                  :content c}] })
 
 (defn situate-in [site]
-  (transform-attr :href site))
+  (edits/transform-attr :href site))
 
 (def categorize identity)
 
@@ -35,10 +36,29 @@
 (en/defsnippet chapter-head "head.html" [:head] [context]
   [:title] (en/append (str " : " (:title context))))
 
-(defn rewrite-chapter [site database docname]
-  (let [situate (situate-in site)
+(en/defsnippet chapter-link "nav.html"
+  [:nav :section#chapter-nav :ul :li]
+  [{url :url title :title}]
+  [:a] (en/do->
+         (en/set-attr :href url)
+         (en/content title)))
+
+(en/defsnippet nav "nav.html" [:nav] [model]
+  [:section#chapter-nav :ul]
+  (en/content (map chapter-link (:chapters model))))
+
+(defn nav-model [db linker]
+  (let [chapter-nav-model (fn [[docname title]]
+         { :url ((:link-chapter linker) docname)
+           :title title })]
+    {:chapters (map chapter-nav-model (:chapters db))}))
+
+(defn rewrite-chapter [linker database docname]
+  (let [
+        situate (situate-in (:rewrite-url linker))
         code-link (apply-link-category database)
-        title (lookup-title database docname)]
+        title (lookup-title database docname)
+        ]
 
     (en/transformation
       [:html]
