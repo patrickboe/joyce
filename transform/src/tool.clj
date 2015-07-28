@@ -2,6 +2,7 @@
   (:require [net.cgrand.enlive-html :as en]
             [rendering :as render]
             [files]
+            [nav]
             [note]
             [chapter]
             [routing :as rt]
@@ -19,19 +20,19 @@
             (rt/route-note t n)
             ((render/rerender (note/rewrite-note (:notes linkers))) c))))
 
-(defn direct-chapter [t]
-  (fn [{n :name c :content}]
-      (let [title (rt/chapter-name n)]
+(defn direct-chapter [t nav]
+  (let [rw (chapter/rewrite-chapter (:chapters linkers) codes/site-data nav)]
+    (fn [{n :name c :content}]
+      (let [nm (rt/chapter-name n)]
         (struct files/finfo
           (routing/route-chapter t n)
-          ((render/rerender
-             (chapter/rewrite-chapter (:chapters linkers) codes/site-data title))
-             c)))))
+          ((render/rerender (rw nm)) c))))))
 
 (defn direct [[note-files chapter-files]]
-  (concat
-    (map (direct-note target) note-files)
-    (map (direct-chapter target) chapter-files)))
+  (let [nav (nav/construct codes/site-data (:chapters linkers))]
+    (concat
+      (map (direct-note target) note-files)
+      (map (direct-chapter target nav) chapter-files))))
 
 (defn calc-sources [s]
   (list (routing/source-notes s) (routing/source-chapters s)))

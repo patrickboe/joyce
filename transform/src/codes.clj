@@ -13,22 +13,23 @@
 
 (def site-data
   { :notes always-notes,
-    :chapters
-      { "telem" "Telemachus",
-        "nestor" "Nestor",
-        "proteus" "Proteus",
-        "calypso" "Calypso",
-        "lotus" "Lotus Eaters",
-        "hades" "Hades",
-        "aeolus" "Aeolus",
-        "lestry" "Lestrygonians",
-        "scylla" "Scylla and Charybdis",
-        "wrocks" "Wandering Rocks",
-        "sirens" "Sirens",
-        "cyclops" "Cyclops",
-        "nausicaa" "Nausicaa",
-        "oxen" "Oxen of the Sun",
-        "circe" "Circe",
-        "eumaeus" "Eumaeus",
-        "ithaca" "Ithaca",
-        "penelope" "Penelope" }})
+   :chapters
+   [
+    [ "telem" "Telemachus" ]
+    [ "nestor" "Nestor" ]
+    [ "proteus" "Proteus" ]
+    [ "calypso" "Calypso" ]
+    [ "lotus" "Lotus Eaters" ]
+    [ "hades" "Hades" ]
+    [ "aeolus" "Aeolus" ]
+    [ "lestry" "Lestrygonians" ]
+    [ "scylla" "Scylla and Charybdis" ]
+    [ "wrocks" "Wandering Rocks" ]
+    [ "sirens" "Sirens" ]
+    [ "cyclops" "Cyclops" ]
+    [ "nausicaa" "Nausicaa" ]
+    [ "oxen" "Oxen of the Sun" ]
+    [ "circe" "Circe" ]
+    [ "eumaeus" "Eumaeus" ]
+    [ "ithaca" "Ithaca" ]
+    [ "penelope" "Penelope" ]]})

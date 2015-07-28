@@ -1,7 +1,6 @@
 (ns note
   (:require
     [edits]
-    [routing]
     [net.cgrand.enlive-html :as en]))
 
 (defn situate-relative [site]

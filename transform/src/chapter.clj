@@ -1,8 +1,8 @@
 (ns chapter
   (:require [net.cgrand.enlive-html :as en]
-            [clojure.string :as st]
             [edits]
-            [routing]))
+            [nav]
+            [clojure.string :as st]))
 
 (defn cite-page [n]
   (let [span-id (:id (:attrs n))
@@ -30,55 +30,40 @@
     (let [id (:id (:attrs n))]
       ((en/add-class (categorize (lookup id :notes database))) n))))
 
-(defn lookup-title [database docname]
-  (lookup docname :chapters database))
-
 (en/defsnippet chapter-head "head.html" [:head] [context]
   [:title] (en/append (str " : " (:title context))))
 
-(en/defsnippet chapter-link "nav.html"
-  [:nav :section#chapter-nav :ul :li]
-  [{url :url title :title}]
-  [:a] (en/do->
-         (en/set-attr :href url)
-         (en/content title)))
+(defn chapter-map [db]
+  (into {} (:chapters db)))
 
-(en/defsnippet nav "nav.html" [:nav] [model]
-  [:section#chapter-nav :ul]
-  (en/content (map chapter-link (:chapters model))))
-
-(defn nav-model [db linker]
-  (let [chapter-nav-model (fn [[docname title]]
-         { :url ((:link-chapter linker) docname)
-           :title title })]
-    {:chapters (map chapter-nav-model (:chapters db))}))
-
-(defn rewrite-chapter [linker database docname]
+(defn rewrite-chapter [linker database nav]
   (let [
         situate (situate-in (:rewrite-url linker))
         code-link (apply-link-category database)
-        title (lookup-title database docname)
-        ]
+        lookup-title (chapter-map database)
+       ]
+    (fn [docname]
+      (let [title (lookup-title docname)]
+        (en/transformation
+          [:html]
+          (comp (en/prepend
+                  (chapter-head { :title title }))
+                (en/prepend nav)
+                (en/set-attr :lang "en"))
 
-    (en/transformation
-      [:html]
-      (comp (en/prepend
-              (chapter-head { :title title }))
-            (en/set-attr :lang "en"))
+          [:body]
+          (comp (en/prepend {:tag :h1, :content title})
+                wrap-main)
 
-      [:body]
-      (comp (en/prepend {:tag :h1, :content title})
-            wrap-main)
+          [:a.box-images]
+          (comp situate
+                (en/remove-attr :id)
+                code-link
+                (en/remove-class "box-images")
+                (en/set-attr :rel "sidebar"))
 
-      [:a.box-images]
-      (comp situate
-            (en/remove-attr :id)
-            code-link
-            (en/remove-class "box-images")
-            (en/set-attr :rel "sidebar"))
+          [:p]
+          (en/remove-class "newchapter")
 
-      [:p]
-      (en/remove-class "newchapter")
-
-      [[:span (en/attr? :id)]]
-      cite-page)))
+          [[:span (en/attr? :id)]]
+          cite-page)))))
