@@ -38,7 +38,7 @@
 
 (defn rewrite-chapter [linker database nav]
   (let [
-        situate (situate-in (:rewrite-url linker))
+        situate (situate-in linker)
         code-link (apply-link-category database)
         lookup-title (chapter-map database)
        ]
@@ -48,12 +48,13 @@
           [:html]
           (comp (en/prepend
                   (chapter-head { :title title }))
-                (en/prepend nav)
                 (en/set-attr :lang "en"))
 
           [:body]
-          (comp (en/prepend {:tag :h1, :content title})
-                wrap-main)
+          (comp
+            (en/prepend nav)
+            (en/prepend {:tag :h1, :content title})
+            wrap-main)
 
           [:a.box-images]
           (comp situate

@@ -15,7 +15,7 @@
 (defn index [db linker]
   (let [chapter-nav-model
         (fn [[docname title]]
-           { :url ((:link-chapter linker) docname)
+           { :url (linker docname)
              :title title })]
     {:chapters (map chapter-nav-model (:chapters db))}))
 

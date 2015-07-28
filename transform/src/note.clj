@@ -91,9 +91,8 @@
 (defn to-html5-doctype [[dt & r]]
   (cons (assoc dt :data ["html"]) r))
 
-(defn rewrite-note [router]
-  (let [site (:rewrite-url router)
-        rewrite-text (rewrite-note-text-for site)
+(defn rewrite-note [site nav]
+  (let [rewrite-text (rewrite-note-text-for site)
         rewrite-images (rewrite-image-section site)]
 
     (comp
@@ -114,7 +113,9 @@
        rewrite-images
 
        [:body]
-       (wrap-content :main)
+       (en/do->
+         (wrap-content :main)
+         (en/prepend nav))
 
        [:head]
        use-title-in-standard-head))))

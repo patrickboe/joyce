@@ -14,14 +14,15 @@
 
 (def linkers (rt/linkers (str "localhost" target)))
 
-(defn direct-note [t]
-  (fn [{n :name c :content}]
-    (struct files/finfo
-            (rt/route-note t n)
-            ((render/rerender (note/rewrite-note (:notes linkers))) c))))
+(defn direct-note [t nav]
+  (let [rw (note/rewrite-note (:rewrite-from-note linkers) nav)]
+    (fn [{n :name c :content}]
+      (struct files/finfo
+              (rt/route-note t n)
+              ((render/rerender rw) c)))))
 
 (defn direct-chapter [t nav]
-  (let [rw (chapter/rewrite-chapter (:chapters linkers) codes/site-data nav)]
+  (let [rw (chapter/rewrite-chapter (:rewrite-from-chapter linkers) codes/site-data nav)]
     (fn [{n :name c :content}]
       (let [nm (rt/chapter-name n)]
         (struct files/finfo
@@ -29,9 +30,9 @@
           ((render/rerender (rw nm)) c))))))
 
 (defn direct [[note-files chapter-files]]
-  (let [nav (nav/construct codes/site-data (:chapters linkers))]
+  (let [nav (nav/construct codes/site-data (:chapter->url linkers))]
     (concat
-      (map (direct-note target) note-files)
+      (map (direct-note target nav) note-files)
       (map (direct-chapter target nav) chapter-files))))
 
 (defn calc-sources [s]
