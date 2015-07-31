@@ -13,11 +13,15 @@
 (defn docname [path]
   (first (tokenized-filename path)))
 
-(defn route-chapter [target path]
-  (str target "/chapters/" (docname path) ".html")) 
+(defn subdir-router [dir]
+  (fn [target path]
+    (str target "/" dir "/" (docname path) ".html")))
 
-(defn route-note [target path]
-  (str target "/notes/" (docname path) ".html") )
+(def route-chapter (subdir-router "chapters"))
+
+(def route-note (subdir-router "notes"))
+
+(def route-info (subdir-router "info"))
 
 (defn image? [path]
   (case (extension path) ("jpg" "png" "gif" "jpeg") true false))
@@ -54,7 +58,11 @@
 
 (def source-notes #(str % "/notes/"))
 
+(defn info-file? [{n :name c :content}] (.endsWith n ".htm"))
+
 (def source-images #(str % "/notes/"))
+
+(def source-infos #(str % "/pages/"))
 
 (defn chapter-name [path] (docname path))
 

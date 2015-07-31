@@ -14,20 +14,9 @@
   (let [sit-rel (situate-relative site)]
     (edits/transform-attr :href sit-rel (comp first en/unwrap))))
 
-(en/defsnippet head-with "head.html" [:head] [d]
-  [:title]
-  (en/append (str " : " (:title d))))
-
-(defn use-title-in-standard-head [n]
-  (head-with { :title
-               (first (en/select n [:title en/text-node])) }))
-
-(defn change-tag [t]
-  (fn [n] (assoc n :tag t)))
-
 (def to-caption
   (comp
-    (change-tag :figcaption)
+    (edits/change-tag :figcaption)
     (en/remove-attr :class)))
 
 (defn wrap-content
@@ -71,51 +60,45 @@
     (en/transformation
       [:div#note]
       (comp
-        (change-tag :summary)
+        (edits/change-tag :summary)
         (en/remove-attr :id))
 
       [:div#expandednote]
       (comp
-        (change-tag :details)
+        (edits/change-tag :details)
         (en/remove-attr :style))
 
       [:div#return]
         (comp
           (en/add-class "byline")
           (en/remove-attr :id)
-          (change-tag :span))
+          (edits/change-tag :span))
 
       [:a]
       situate)))
-
-(defn to-html5-doctype [[dt & r]]
-  (cons (assoc dt :data ["html"]) r))
 
 (defn rewrite-note [site nav]
   (let [rewrite-text (rewrite-note-text-for site)
         rewrite-images (rewrite-image-section site)]
 
-    (comp
+    (edits/without-doctype
 
-     rest
+      (en/transformation
+        [:html]
+        edits/apply-html-standard
 
-     (en/transformation
-       [:html]
-       (en/do-> (en/set-attr :lang "en")
-                (en/remove-attr :xmlns))
+        [:div#button] nil
 
-       [:div#button] nil
+        [:div.note-container]
+        (en/do-> rewrite-text en/unwrap)
 
-       [:div.note-container]
-       (en/do-> rewrite-text en/unwrap)
+        [:div#images]
+        rewrite-images
 
-       [:div#images]
-       rewrite-images
+        [:body]
+        (en/do->
+          (wrap-content :main)
+          (en/prepend nav))
 
-       [:body]
-       (en/do->
-         (wrap-content :main)
-         (en/prepend nav))
-
-       [:head]
-       use-title-in-standard-head))))
+        [:head]
+        edits/use-title-in-standard-head))))
