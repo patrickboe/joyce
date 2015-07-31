@@ -1,19 +1,27 @@
 (ns tool
   (:require [net.cgrand.enlive-html :as en]
-            [rendering :as render]
-            [files]
-            [nav]
-            [note]
-            [chapter]
-            [info]
-            [routing :as rt]
-            [codes]))
+            [rendering :as render] [routing :as rt]
+            [files] [nav] [note] [chapter] [info] [codes]))
 
 (def source "/home/patrick/dev/proj/joyce/orig")
 
 (def target "/home/patrick/dev/proj/joyce/dist")
 
 (def linkers (rt/linkers (str "localhost" target)))
+
+;;(def make-direction rewrite route
+;;  (fn [t data nav]
+;;    (let [rw (rewrite data nav)]
+;;      (fn [{n :name, c :content, :as file}]
+;;        (struct files/finfo
+;;                (route t n)
+;;                ((render/rerender (rw file)) c))))))
+;;
+;;(map make-direction
+;;     [(note/rewrite-note (:rewrite-from-note linkers))
+;;      (info/rewrite-info-page identity)
+;;      (chapter/rewrite-chapter (:rewrite-from-chapter linkers))]
+;;     [rt/route-note rt/route-info rt/route-chapter])
 
 (defn direct-note [t nav]
   (let [rw (note/rewrite-note (:rewrite-from-note linkers) nav)]
@@ -38,19 +46,15 @@
           ((render/rerender (rw nm)) c))))))
 
 (defn direct [[note-files chapter-files note-files]]
-  (let [nav (nav/construct codes/site-data (:chapter->url linkers))]
-    (concat
-      (map (direct-note target nav) note-files)
-      (map (direct-chapter target nav) chapter-files)
-      (map (direct-info target nav) (filter rt/info-file? note-files)))))
+  (let [nav (nav/construct codes/site-data (:chapter->url linkers))
+        direct-from-source
+          (fn [dir source] (map (dir target nav) source)) ]
+    (mapcat direct-from-source
+      [direct-note direct-chapter direct-info]
+      [note-files chapter-files (filter rt/info-file? note-files)])))
 
-(defn calc-sources [s]
-  (list
-    (rt/source-notes s)
-    (rt/source-chapters s)
-    (rt/source-infos s)))
-
-(def imgrouter (rt/route-images source target))
+(def calc-sources
+  (juxt rt/source-notes rt/source-chapters rt/source-infos))
 
 (defn migrate-text []
   (->> source
@@ -64,7 +68,7 @@
   (->> source
        rt/source-images
        files/list-contents
-       imgrouter
+       ((rt/route-images source target))
        (map (partial apply files/cp))
        dorun))
 

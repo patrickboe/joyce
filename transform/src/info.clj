@@ -15,7 +15,9 @@
       edits/use-title-in-standard-head
 
       [:body]
-      (en/remove-attr :background)
+      (en/do->
+        (en/prepend nav)
+        (en/remove-attr :background))
 
       [:div.logo] nil
 
