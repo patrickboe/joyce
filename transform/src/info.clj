@@ -8,23 +8,24 @@
         main (first (en/at proto-main [:h2] nil))]
     [title main]))
 
-(defn rewrite-info-page [site nav]
-  (edits/without-doctype
-    (en/transformation
-      [:head]
-      edits/use-title-in-standard-head
+(defn rewrite-info-page [site]
+  (fn [db nav file]
+     (edits/without-doctype
+       (en/transformation
+         [:head]
+         edits/use-title-in-standard-head
 
-      [:body]
-      (en/do->
-        (en/prepend nav)
-        (en/remove-attr :background))
+         [:body]
+         (en/do->
+           (en/prepend nav)
+           (en/remove-attr :background))
 
-      [:div.logo] nil
+         [:div.logo] nil
 
-      [:div.text]
-      rewrite-info-content
+         [:div.text]
+         rewrite-info-content
 
-      [:html]
-      edits/apply-html-standard)))
+         [:html]
+         edits/apply-html-standard))))
 
 ;;(def txt (first (en/select (en/html-resource (clojure.java.io/file "/home/patrick/dev/proj/joyce/orig/pages/aboutnotes.htm")) [:div.text] )))

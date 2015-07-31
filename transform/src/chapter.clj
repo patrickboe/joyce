@@ -36,35 +36,34 @@
 (defn chapter-map [db]
   (into {} (:chapters db)))
 
-(defn rewrite-chapter [linker database nav]
-  (let [
-        situate (situate-in linker)
-        code-link (apply-link-category database)
-        lookup-title (chapter-map database)
-       ]
-    (fn [docname]
-      (let [title (lookup-title docname)]
-        (en/transformation
-          [:html]
-          (comp (en/prepend
-                  (chapter-head { :title title }))
-                (en/set-attr :lang "en"))
+(defn rewrite-chapter [linker]
+  (fn [database nav file]
+    (let [situate (situate-in linker)
+          code-link (apply-link-category database)
+          lookup-title (chapter-map database)
+          docname (:name file)
+          title (lookup-title docname)]
+      (en/transformation
+        [:html]
+        (comp (en/prepend
+                (chapter-head { :title title }))
+              (en/set-attr :lang "en"))
 
-          [:body]
-          (comp
-            (en/prepend nav)
-            (en/prepend {:tag :h1, :content title})
-            wrap-main)
+        [:body]
+        (comp
+          (en/prepend nav)
+          (en/prepend {:tag :h1, :content title})
+          wrap-main)
 
-          [:a.box-images]
-          (comp situate
-                (en/remove-attr :id)
-                code-link
-                (en/remove-class "box-images")
-                (en/set-attr :rel "sidebar"))
+        [:a.box-images]
+        (comp situate
+              (en/remove-attr :id)
+              code-link
+              (en/remove-class "box-images")
+              (en/set-attr :rel "sidebar"))
 
-          [:p]
-          (en/remove-class "newchapter")
+        [:p]
+        (en/remove-class "newchapter")
 
-          [[:span (en/attr? :id)]]
-          cite-page)))))
+        [[:span (en/attr? :id)]]
+        cite-page))))

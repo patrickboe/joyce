@@ -77,28 +77,29 @@
       [:a]
       situate)))
 
-(defn rewrite-note [site nav]
-  (let [rewrite-text (rewrite-note-text-for site)
-        rewrite-images (rewrite-image-section site)]
+(defn rewrite-note [site]
+   (let [rewrite-text (rewrite-note-text-for site)
+          rewrite-images (rewrite-image-section site)]
+     (fn [db nav file]
 
-    (edits/without-doctype
+       (edits/without-doctype
 
-      (en/transformation
-        [:html]
-        edits/apply-html-standard
+         (en/transformation
+           [:html]
+           edits/apply-html-standard
 
-        [:div#button] nil
+           [:div#button] nil
 
-        [:div.note-container]
-        (en/do-> rewrite-text en/unwrap)
+           [:div.note-container]
+           (en/do-> rewrite-text en/unwrap)
 
-        [:div#images]
-        rewrite-images
+           [:div#images]
+           rewrite-images
 
-        [:body]
-        (en/do->
-          (wrap-content :main)
-          (en/prepend nav))
+           [:body]
+           (en/do->
+             (wrap-content :main)
+             (en/prepend nav))
 
-        [:head]
-        edits/use-title-in-standard-head))))
+           [:head]
+           edits/use-title-in-standard-head)))))
