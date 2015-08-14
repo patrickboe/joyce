@@ -13,6 +13,42 @@
 
 (def site-data
   { :notes always-notes,
+   :pages
+   [
+     [ "Notes"
+       [
+         [ "colorcoding" "Color Coding" ]
+         [ "aboutnotes" "About the Notes" ]
+         [ "tally" "Tally of Notes" ]
+       ] ]
+     [ "The Site" 
+       [
+         [ "aboutproject" "About the Project" ]
+         [ "contributors" "Contributors" ]
+         [ "sources" "Sources" ]
+         [ "fairuse" "Fair Use" ]
+         [ "latestnews" "Latest News" ]
+       ] ]
+     [ "Resources"
+       [
+         [ "people" "People in the Novel" ]
+         [ "times" "Times in the Novel" ]
+       ] ]
+     [ "Editions"
+       [
+         [ "ourtext" "Text and Pagination" ]
+       ] ]
+     [ "Search"
+       [
+         [ "searchchapters" "Search Chapters" ]
+         [ "searchnovel" "Search Entire Novel" ]
+       ] ]
+     [ "Contact Us"
+       [
+         [ "corrections" "Corrections" ]
+         [ "contributors" "Contribute Notes" ]
+       ] ]
+    ]
    :chapters
    [
     [ "telem" "Telemachus" ]
