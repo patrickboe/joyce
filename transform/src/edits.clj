@@ -1,8 +1,6 @@
 (ns edits
   (:require [net.cgrand.enlive-html :as en]))
 
-(defn without-doctype [tf] (comp rest tf))
-
 (defn change-tag [t]
   (fn [n] (assoc n :tag t)))
 
@@ -16,14 +14,20 @@
          (assoc-in n [:attrs attr] newval)
          (on-nil n))))))
 
-(def apply-html-standard
-   (en/do-> (en/set-attr :lang "en")
-            (en/remove-attr :xmlns)))
+(en/deftemplate joyce-page "sample.html"
+  [{:keys [title nav main]}]
 
-(en/defsnippet head-with "head.html" [:head] [d]
   [:title]
-  (en/append (str " : " (:title d))))
+  (en/append (str " : " title))
 
-(defn use-title-in-standard-head [n]
-  (head-with { :title
-               (first (en/select n [:title en/text-node])) }))
+  [:nav]
+  (en/substitute nav)
+
+  [:h1]
+  (en/content title)
+
+  [:main]
+  (en/content main))
+
+(defn host-content [title nav main-nodes]
+  (joyce-page {:title title, :nav nav, :main main-nodes}))

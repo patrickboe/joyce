@@ -1,15 +1,15 @@
 (ns nav
   (:require [net.cgrand.enlive-html :as en]))
 
-(en/defsnippet chapter-link "nav.html"
+(en/defsnippet chapter-link "sample.html"
   [:nav :section#chapter-nav :ul :li]
   [{url :url title :title}]
   [:a] (en/do->
          (en/set-attr :href url)
          (en/content title)))
 
-(en/defsnippet nav "nav.html" [:nav] [model]
-  [:section#chapter-nav :ul]
+(en/defsnippet nav "sample.html" [:nav] [model]
+  [:nav :section#chapter-nav :ul]
   (en/content (map chapter-link (:chapters model))))
 
 (defn index [db linker]

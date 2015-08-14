@@ -80,26 +80,20 @@
 (defn rewrite-note [site]
    (let [rewrite-text (rewrite-note-text-for site)
           rewrite-images (rewrite-image-section site)]
-     (fn [db nav file]
+     (fn [db nav doc]
+       (let
+         [tfm (en/transformation
+                [:body] en/unwrap
 
-       (edits/without-doctype
+                [:div#button] nil
 
-         (en/transformation
-           [:html]
-           edits/apply-html-standard
+                [:div.note-container]
+                (en/do-> rewrite-text en/unwrap)
 
-           [:div#button] nil
-
-           [:div.note-container]
-           (en/do-> rewrite-text en/unwrap)
-
-           [:div#images]
-           rewrite-images
-
-           [:body]
-           (en/do->
-             (wrap-content :main)
-             (en/prepend nav))
-
-           [:head]
-           edits/use-title-in-standard-head)))))
+                [:div#images]
+                rewrite-images)]
+         (fn [node]
+           (edits/host-content
+             (first (en/select node [:title en/text-node]))
+             nav
+             (tfm (en/select node [:body]))))))))

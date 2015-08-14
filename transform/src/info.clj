@@ -2,30 +2,20 @@
   (:require [edits]
             [net.cgrand.enlive-html :as en]))
 
-(defn rewrite-info-content [n]
-  (let [title ((edits/change-tag :h1) (first (en/select n [:h2])))
-        proto-main ((en/remove-class "text") ((edits/change-tag :main) n))
-        main (first (en/at proto-main [:h2] nil))]
-    [title main]))
+(en/deftemplate info-page "sample.html" [node])
 
-(defn rewrite-info-page [site]
-  (fn [db nav file]
-     (edits/without-doctype
-       (en/transformation
-         [:head]
-         edits/use-title-in-standard-head
+(defn rewrite-info-page [db nav doc]
+  (let [tfm  (en/transformation
+               [:h2] nil)]
+    (fn [node]
+      (edits/host-content
+        (first (en/select node [:h2]))
+        nav
+        (tfm (en/select node [:div.text]))))))
 
-         [:body]
-         (en/do->
-           (en/prepend nav)
-           (en/remove-attr :background))
+(defn rewrite-rich-info [db nav doc]
+  info-page)
 
-         [:div.logo] nil
+(def txt (en/select (en/html-resource (clojure.java.io/file "/home/patrick/dev/proj/joyce/orig/pages/people.php")) [:div.text] ))
 
-         [:div.text]
-         rewrite-info-content
-
-         [:html]
-         edits/apply-html-standard))))
-
-;;(def txt (first (en/select (en/html-resource (clojure.java.io/file "/home/patrick/dev/proj/joyce/orig/pages/aboutnotes.htm")) [:div.text] )))
+;;((rewrite-info-page nil nil nil) txt)

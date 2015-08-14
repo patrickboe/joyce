@@ -3,4 +3,5 @@
   :plugins [[cider/cider-nrepl "0.9.1"]]
   :dependencies [[org.clojure/clojure "1.5.1"]
                  [commons-io/commons-io "2.4"]
+                 [org.clojure/tools.trace "0.7.8"]
                  [enlive "1.1.1"]])

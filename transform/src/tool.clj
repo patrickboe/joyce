@@ -9,30 +9,31 @@
 
 (def linkers (rt/linkers (str "localhost" target)))
 
+(def nav (nav/construct codes/site-data (:chapter->url linkers)))
+
+(defn direct-from-source [dir source]
+  (map (dir target codes/site-data nav) source))
+
 (defn make-direction [rewrite route]
   (fn [t data nav]
-    (fn [{n :name, c :content, :as file}]
+    (fn [{n :name, c :content}]
       (struct files/finfo
               (route t n)
-              ((render/rerender (rewrite data nav file)) c)))))
+              ((render/rerender (rewrite data nav (rt/docname n))) c)))))
 
-(defn direct [[note-files info-files chapter-files]]
-  (let [nav (nav/construct codes/site-data (:chapter->url linkers))
+(defn categorize [[note-files info-files chapter-files]]
+  [ note-files
+    (filter rt/info? info-files)
+    (filter rt/rich-info? info-files)
+    chapter-files ] )
 
-        directions
-          (map make-direction
-               [(note/rewrite-note (:rewrite-from-note linkers))
-                (info/rewrite-info-page identity)
-                (chapter/rewrite-chapter (:rewrite-from-chapter linkers))]
-               [rt/route-note rt/route-info rt/route-chapter])
-
-        sources
-          [note-files (filter rt/info-file? info-files) chapter-files]
-
-        direct-from-source
-          (fn [dir source] (map (dir target codes/site-data nav) source)) ]
-
-    (mapcat direct-from-source directions sources)))
+(def directions
+  (map make-direction
+    [ (note/rewrite-note (:rewrite-from-note linkers))
+      info/rewrite-info-page
+      info/rewrite-rich-info
+      (chapter/rewrite-chapter (:rewrite-from-chapter linkers)) ]
+    [ rt/route-note rt/route-info rt/route-info rt/route-chapter ]) )
 
 (def calc-sources
   (juxt rt/source-notes rt/source-infos rt/source-chapters))
@@ -41,7 +42,8 @@
   (->> source
        calc-sources
        (map files/read-contents)
-       direct
+       categorize
+       (mapcat direct-from-source directions)
        (map files/write-out)
        dorun))
 

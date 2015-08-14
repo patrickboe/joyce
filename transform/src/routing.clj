@@ -58,13 +58,13 @@
 
 (def source-notes #(str % "/notes/"))
 
-(defn info-file? [{n :name c :content}] (.endsWith n ".htm"))
+(defn info? [{n :name c :content}] (.endsWith n ".htm"))
+
+(defn rich-info? [{n :name c :content}] (.endsWith n ".php"))
 
 (def source-images #(str % "/notes/"))
 
 (def source-infos #(str % "/pages/"))
-
-(defn chapter-name [path] (docname path))
 
 (defn make-protocol-relative [host]
   (fn [url] (str "//" host "/" url)))
