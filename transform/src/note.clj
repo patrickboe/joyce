@@ -19,16 +19,6 @@
     (edits/change-tag :figcaption)
     (en/remove-attr :class)))
 
-(defn wrap-content
- ([tag] (wrap-content tag nil))
- ([tag attrs]
-   (fn [n]
-     (assoc n :content
-            (en/as-nodes (array-map
-              :tag tag
-              :attrs attrs
-              :content (:content n)))))))
-
 (defn situate-image [site]
   (let [situate-img-link (situate-in site)
         situate-img-src (edits/transform-attr :src site)]

@@ -9,7 +9,7 @@
 
 (def linkers (rt/linkers (str "localhost" target)))
 
-(def nav (nav/construct codes/site-data (:chapter->url linkers)))
+(def nav (nav/construct codes/site-data linkers))
 
 (defn direct-from-source [dir source]
   (map (dir target codes/site-data nav) source))

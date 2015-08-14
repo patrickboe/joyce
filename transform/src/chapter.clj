@@ -14,11 +14,6 @@
       :attrs { :class "page",
                :title title}}))
 
-(defn wrap-main [{c :content}]
-    { :tag :body,
-      :content [{:tag :main,
-                 :content c}] })
-
 (defn situate-in [site]
   (edits/transform-attr :href site))
 

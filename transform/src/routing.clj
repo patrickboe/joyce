@@ -81,6 +81,12 @@
 (defrecord Linker [link-chapter rewrite-url])
 
 (defn linkers [host]
-  { :chapter->url (comp (make-protocol-relative (str host "/chapters")) #(str % ".html"))
-    :rewrite-from-chapter (rewrite-for host "")
-    :rewrite-from-note (rewrite-for host "notes/") })
+  (let [linker-from
+        (fn [subdir]
+          (comp (make-protocol-relative (str host "/" subdir))
+                #(str % ".html"))) ]
+
+    { :chapter->url (linker-from "chapters")
+      :info->url (linker-from "info")
+      :rewrite-from-chapter (rewrite-for host "")
+      :rewrite-from-note (rewrite-for host "notes/") }))
