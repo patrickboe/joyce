@@ -29,6 +29,9 @@
 (defn chapter-map [db]
   (into {} (:chapters db)))
 
+(defn remove-classes [cs]
+  (apply comp (map en/remove-class cs)))
+
 (defn rewrite-chapter [linker]
   (fn [database nav docname]
     (let [situate (situate-in linker)
@@ -38,11 +41,11 @@
           get-main #(en/select % [:body :> en/any-node])
           tfm
           (en/transformation
-            [:a.box-images]
+            #{[:a.box-media] [:a.box-images-med] [:a.box-images-short] [:a.box-images]}
             (comp situate
                   (en/remove-attr :id)
                   code-link
-                  (en/remove-class "box-images")
+                  (remove-classes ["box-images" "box-images-med" "box-images-short" "box-media"])
                   (en/set-attr :rel "sidebar"))
 
             [:p]

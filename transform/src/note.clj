@@ -80,7 +80,7 @@
                 [:div.note-container]
                 (en/do-> rewrite-text en/unwrap)
 
-                [:div#images]
+                #{[:div#images] [:div#media]}
                 rewrite-images)]
          (fn [node]
            (edits/host-content
