@@ -3,9 +3,12 @@
   (:require [edits]
             [net.cgrand.enlive-html :as en]))
 
+(defn is-tag? [t] (fn [n] (= t (:tag n))))
+
 (en/deftemplate info-page "sample.html" [node])
 
-(def simple-tfm (en/transformation [:h2] nil))
+(def simple-tfm
+  (en/transformation [:h2] nil))
 
 (def trim-nbsp
   (comp clojure.string/trim
@@ -16,8 +19,7 @@
 
 (defn content-to-definitions [n]
   (let [c (:content n)
-        anchor? #(= :a (:tag %))
-        pairs (partition-by anchor? c)
+        pairs (partition-by (is-tag? :a) c)
         symbols (map (en/wrap :dt) (every-other pairs))
         defs (map (en/wrap :dd) (every-other (drop 1 pairs)))
         dl-content (interleave symbols defs)]
@@ -25,18 +27,34 @@
 
 (defn li->def [li]
   (let [c (:content li)
-        dt (first ((en/transformation
-                     [:b] en/unwrap
-                     [:a] (edits/change-tag :dt)) (first c)))
+        ->dt
+        (en/transformation
+          [:b] en/unwrap
+
+          #{[:strong] [:a]}
+          (en/do->
+            (edits/change-tag :dt)
+            (en/transform-content [en/text-node] trim-nbsp)))
+        dt (first (->dt (first c)))
         dd {:tag :dd, :attrs {}, :content (rest c)} ]
     (list dt dd)))
 
-(def rich-tfm
+(def tfm-rich-info
+  (en/transformation
+    [:br] nil
+
+    [[:p (en/attr-starts :style "margin-left")]]
+      (en/do->
+        (en/add-class "author")
+        (en/remove-attr  :style)
+        (edits/change-tag :header))))
+
+(def tfm-people
     (en/transformation
-      [:br] nil
 
       [:a] (en/do->
              (en/remove-attr :target)
+             (en/add-class "intro")
              (en/remove-class "gloss"))
 
       [:ul.gloss]
@@ -58,18 +76,35 @@
       [:p.biblio]
         (en/do->
           (en/remove-class "biblio")
-          (edits/change-tag :cite))
+          (edits/change-tag :cite))))
 
-      [[:p (en/attr= :style "margin-left: 220px;")]]
-      (en/do->
-        (en/add-class "author")
-        (en/remove-attr  :style)
-        (edits/change-tag :header))))
+(def transform-range-body
+  (en/transformation
+    [:ul]
+    (edits/change-tag :dl)
+
+    [:li]
+    (en/do->
+      (en/transform-content [en/whitespace] nil)
+      li->def)))
+
+(defn transform-range [[header body]]
+  [header (transform-range-body body)])
+
+(def transform-intro
+  (en/transformation
+    [:ul] (en/do-> (en/remove-class "gloss") (edits/change-tag :section))
+    [:li] (en/do-> (edits/change-tag :p) (en/remove-class "gloss"))))
+
+(defn tfm-times [n]
+  (let [[title intro & body] (partition-by (is-tag? :ul) n)
+        biblio (last body)
+        time-ranges (apply concat (map transform-range (partition 2 (butlast body))))]
+    [(simple-tfm title) (transform-intro intro) time-ranges biblio]))
 
 (defn info-rewriter [tfm]
   (fn [db nav doc]
     (fn [node]
-
       (edits/host-content
         (first (en/select node [:h2 :> en/text-node]))
         nav
@@ -77,8 +112,6 @@
 
 (def rewrite-info-page (info-rewriter simple-tfm))
 
-(def rewrite-rich-info (info-rewriter (comp simple-tfm rich-tfm)))
+(def rewrite-times (info-rewriter (comp tfm-times tfm-rich-info)))
 
-(def txt (en/select (en/html-resource (clojure.java.io/file "/home/patrick/dev/proj/joyce/orig/pages/people.php")) [:div.text] ))
-
-;;((rewrite-info-page nil nil nil) txt)
+(def rewrite-people (info-rewriter (comp tfm-people tfm-rich-info simple-tfm)))

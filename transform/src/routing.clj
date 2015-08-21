@@ -60,7 +60,9 @@
 
 (defn info? [{n :name c :content}] (.endsWith n ".htm"))
 
-(defn rich-info? [{n :name c :content}] (.endsWith n ".php"))
+(defn people? [{n :name c :content}] (= n "people.php"))
+
+(defn times? [{n :name c :content}] (= n "times.php"))
 
 (def source-images #(str % "/notes/"))
 

@@ -22,18 +22,28 @@
               ((render/rerender (rewrite data nav (rt/docname n))) c)))))
 
 (defn categorize [[note-files info-files chapter-files]]
-  [ note-files
-    (filter rt/info? info-files)
-    (filter rt/rich-info? info-files)
-    chapter-files ] )
+  [
+    ;;note-files
+    ;;(filter rt/info? info-files)
+    ;;(filter rt/people? info-files)
+    (filter rt/times? info-files)
+    ;;chapter-files
+   ] )
 
 (def directions
   (map make-direction
-    [ (note/rewrite-note (:rewrite-from-note linkers))
-      info/rewrite-info-page
-      info/rewrite-rich-info
-      (chapter/rewrite-chapter (:rewrite-from-chapter linkers)) ]
-    [ rt/route-note rt/route-info rt/route-info rt/route-chapter ]) )
+    [ ;;(note/rewrite-note (:rewrite-from-note linkers))
+      ;;info/rewrite-info-page
+      ;;info/rewrite-people
+      info/rewrite-times
+      ;;(chapter/rewrite-chapter (:rewrite-from-chapter linkers) )
+     ]
+    [ ;;rt/route-note
+      ;;rt/route-info
+      ;;rt/route-info
+      rt/route-info
+      ;;rt/route-chapter
+    ]) )
 
 (def calc-sources
   (juxt rt/source-notes rt/source-infos rt/source-chapters))
