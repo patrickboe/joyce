@@ -32,9 +32,7 @@
           [:b] en/unwrap
 
           #{[:strong] [:a]}
-          (en/do->
-            (edits/change-tag :dt)
-            (en/transform-content [en/text-node] trim-nbsp)))
+          (edits/change-tag :dt))
         dt (first (->dt (first c)))
         dd {:tag :dd, :attrs {}, :content (rest c)} ]
     (list dt dd)))
@@ -42,6 +40,8 @@
 (def tfm-rich-info
   (en/transformation
     [:br] nil
+
+    [#{:strong :p :h2} en/text-node] trim-nbsp
 
     [[:p (en/attr-starts :style "margin-left")]]
       (en/do->
@@ -68,15 +68,28 @@
         (en/add-class "key")
         (en/remove-attr :style)
         (edits/change-tag :dl)
-        (en/transform-content
-          [en/whitespace] nil
-          [en/text-node] trim-nbsp)
+        (en/transform-content [en/whitespace] nil)
         content-to-definitions)
 
       [:p.biblio]
         (en/do->
           (en/remove-class "biblio")
           (edits/change-tag :cite))))
+
+(defn nonempty-node? [n]
+  (not (empty? (:content n))))
+
+(def p->nav
+  (comp (en/transformation
+          [#{:strong :p}] en/unwrap)
+        (en/transformation [:p :> en/text-node] nil)))
+
+(defn extract-nav [section]
+  (let [paragraphs (en/select section [:p])
+        [intro [_ _ & navs]] (split-with nonempty-node? paragraphs)]
+    [
+     ((en/transformation [:section] (en/content intro)) section)
+     {:tag :nav, :attrs { :class "periods" }, :content (p->nav navs)}]))
 
 (def transform-range-body
   (en/transformation
@@ -88,8 +101,10 @@
       (en/transform-content [en/whitespace] nil)
       li->def)))
 
-(defn transform-range [[header body]]
-  [header (transform-range-body body)])
+(defn transform-period [[header body]]
+  { :tag :section,
+    :attrs { :class "period" },
+    :content (concat header (transform-range-body body)) })
 
 (def transform-intro
   (en/transformation
@@ -99,8 +114,9 @@
 (defn tfm-times [n]
   (let [[title intro & body] (partition-by (is-tag? :ul) n)
         biblio (last body)
-        time-ranges (apply concat (map transform-range (partition 2 (butlast body))))]
-    [(simple-tfm title) (transform-intro intro) time-ranges biblio]))
+        time-periods (map transform-period (partition 2 (butlast body)))
+        [clean-intro nav] (extract-nav (transform-intro intro))]
+    [(simple-tfm title) clean-intro nav time-periods biblio]))
 
 (defn info-rewriter [tfm]
   (fn [db nav doc]
