@@ -25,8 +25,14 @@
         dl-content (interleave symbols defs)]
     (assoc n :content dl-content)))
 
+(defn nonempty-node? [n]
+  (not (and (map? n) (empty? (:content n)))))
+
+(defn whitespace-node? [n]
+  (and (string? n) (re-matches #"\s*" n)))
+
 (defn li->def [li]
-  (let [c (:content li)
+  (let [c (drop-while whitespace-node? (:content li))
         ->dt
         (en/transformation
           [:b] en/unwrap
@@ -34,7 +40,7 @@
           #{[:strong] [:a]}
           (edits/change-tag :dt))
         dt (first (->dt (first c)))
-        dd {:tag :dd, :attrs {}, :content (rest c)} ]
+        dd {:tag :dd, :attrs {}, :content (drop-while whitespace-node? (rest c))} ]
     (list dt dd)))
 
 (def tfm-rich-info
@@ -59,7 +65,6 @@
 
       [:ul.gloss]
       (en/do->
-        (en/transform-content [en/whitespace] nil)
         (edits/change-tag :dl)
         (en/transform-content [:li] li->def))
 
@@ -76,9 +81,6 @@
           (en/remove-class "biblio")
           (edits/change-tag :cite))))
 
-(defn nonempty-node? [n]
-  (not (empty? (:content n))))
-
 (def p->nav
   (comp (en/transformation
           [#{:strong :p}] en/unwrap)
@@ -91,15 +93,16 @@
      ((en/transformation [:section] (en/content intro)) section)
      {:tag :nav, :attrs { :class "periods" }, :content (p->nav navs)}]))
 
+(defn remove-nav [n]
+  (assoc n :content (take-while nonempty-node? (:content n))))
+
 (def transform-range-body
   (en/transformation
     [:ul]
-    (edits/change-tag :dl)
-
-    [:li]
-    (en/do->
-      (en/transform-content [en/whitespace] nil)
-      li->def)))
+      (en/do->
+        remove-nav
+        (edits/change-tag :dl)
+        (en/transform-content [:li] li->def))))
 
 (defn transform-period [[header body]]
   { :tag :section,
