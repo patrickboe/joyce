@@ -25,7 +25,7 @@
   [
     ;;note-files
     ;;(filter rt/info? info-files)
-    ;;(filter rt/people? info-files)
+    (filter rt/people? info-files)
     (filter rt/times? info-files)
     ;;chapter-files
    ] )
@@ -34,13 +34,13 @@
   (map make-direction
     [ ;;(note/rewrite-note (:rewrite-from-note linkers))
       ;;info/rewrite-info-page
-      ;;info/rewrite-people
+      info/rewrite-people
       info/rewrite-times
       ;;(chapter/rewrite-chapter (:rewrite-from-chapter linkers) )
      ]
     [ ;;rt/route-note
       ;;rt/route-info
-      ;;rt/route-info
+      rt/route-info
       rt/route-info
       ;;rt/route-chapter
     ]) )

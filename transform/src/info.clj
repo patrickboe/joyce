@@ -25,11 +25,20 @@
         dl-content (interleave symbols defs)]
     (assoc n :content dl-content)))
 
-(defn nonempty-node? [n]
-  (not (and (map? n) (empty? (:content n)))))
+(def nonempty-node?
+  (comp not empty-node?))
 
-(defn whitespace-node? [n]
-  (and (string? n) (re-matches #"\s*" n)))
+(defn empty-node? [n]
+  (and (map? n) (empty? (:content n))))
+
+(defn node-matches? [re]
+  (fn [n]
+    (and (string? n) (re-matches re n))))
+
+(defn citation-header? [n]
+  (and (map? n) ((node-matches? #".*Works Cited.*") (first (:content n)))))
+
+(def whitespace-node? (node-matches? #"\s*"))
 
 (defn li->def [li]
   (let [c (drop-while whitespace-node? (:content li))
@@ -45,6 +54,8 @@
 
 (def tfm-rich-info
   (en/transformation
+    [:a] (en/remove-class "gloss")
+
     [:br] nil
 
     [#{:strong :p :h2} en/text-node] trim-nbsp
@@ -60,11 +71,11 @@
 
       [:a] (en/do->
              (en/remove-attr :target)
-             (en/add-class "intro")
-             (en/remove-class "gloss"))
+             (en/add-class "intro"))
 
       [:ul.gloss]
       (en/do->
+        (en/remove-class "gloss")
         (edits/change-tag :dl)
         (en/transform-content [:li] li->def))
 
@@ -91,23 +102,55 @@
         [intro [_ _ & navs]] (split-with nonempty-node? paragraphs)]
     [
      ((en/transformation [:section] (en/content intro)) section)
-     {:tag :nav, :attrs { :class "periods" }, :content (p->nav navs)}]))
+     {:tag :nav, :attrs { :class "eras" }, :content (p->nav navs)}]))
 
-(defn remove-nav [n]
-  (assoc n :content (take-while nonempty-node? (:content n))))
+(defn canon? [n]
+  (not (or (citation-header? n) (empty-node? n))) )
 
-(def transform-range-body
+(defn remove-cruft [n]
+  (assoc n :content (take-while canon? (:content n))))
+
+(def normalize-body (en/transformation [:h2] nil))
+
+(def transform-era-body
   (en/transformation
     [:ul]
       (en/do->
-        remove-nav
+        remove-cruft
         (edits/change-tag :dl)
         (en/transform-content [:li] li->def))))
 
-(defn transform-period [[header body]]
-  { :tag :section,
-    :attrs { :class "period" },
-    :content (concat header (transform-range-body body)) })
+(def transform-era-content
+  (en/transformation [:h2] (en/remove-class "era")))
+
+(defn transform-norm-era [[header body]]
+  [{ :tag :section,
+     :attrs { :class "era" },
+     :content (transform-era-content
+                (concat header
+                        (transform-era-body (normalize-body body)))) }])
+
+(defn twelfth? [li]
+  (first (en/select li [[:strong (en/has [(en/re-pred #"12.*")])]])))
+
+(defn wrap-era [lis]
+  (list {:tag :ul, :attrs {}, :content lis}))
+
+(defn split-century [body]
+  (let [[c1 c2] (split-with twelfth? (en/select body [:li]))]
+    [(wrap-era c1) (wrap-era c2)]))
+
+(defn split-era [h1 h2 body]
+  (let [[b1 b2] (split-century body)] [[h1 b1] [h2 b2]]))
+
+(defn transform-era [[header body :as era]]
+  (if-let [bad-h (not-empty (en/select body [:h2]))]
+    (let [[e1 e2] (split-era header bad-h (en/at body [:h2] nil))]
+      (concat (transform-norm-era e1) (transform-norm-era e2)))
+    (transform-norm-era era)))
+
+(def transform-bibliography
+  (en/transformation [:p] (edits/change-tag :cite)))
 
 (def transform-intro
   (en/transformation
@@ -115,11 +158,11 @@
     [:li] (en/do-> (edits/change-tag :p) (en/remove-class "gloss"))))
 
 (defn tfm-times [n]
-  (let [[title intro & body] (partition-by (is-tag? :ul) n)
-        biblio (last body)
-        time-periods (map transform-period (partition 2 (butlast body)))
+  (let [[title intro & body-parts] (partition-by (is-tag? :ul) n)
+        biblio (transform-bibliography (last body-parts))
+        eras (mapcat transform-era (partition 2 (butlast body-parts)))
         [clean-intro nav] (extract-nav (transform-intro intro))]
-    [(simple-tfm title) clean-intro nav time-periods biblio]))
+    [(simple-tfm title) clean-intro nav eras biblio]))
 
 (defn info-rewriter [tfm]
   (fn [db nav doc]
