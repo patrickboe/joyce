@@ -68,6 +68,8 @@
 
 (def source-infos #(str % "/pages/"))
 
+(def source-js #(str % "/swap/"))
+
 (defn make-protocol-relative [host]
   (fn [url] (str "//" host "/" url)))
 
