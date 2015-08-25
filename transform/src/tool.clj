@@ -7,8 +7,6 @@
 
 (def target "/home/patrick/dev/proj/joyce/dist")
 
-(def linkers (rt/linkers (str "localhost" target)))
-
 (defn make-direction [rewrite route]
   (fn [t data nav]
     (fn [{n :name, c :content}]
@@ -25,7 +23,7 @@
     chapter-files
    ] )
 
-(def directions
+(defn directions [linkers]
   (map make-direction
     [ (note/rewrite-note (:rewrite-from-note linkers))
       info/rewrite-info-page
@@ -50,15 +48,18 @@
        (map (comp slurp :content))
        data/site-data))
 
-(defn migrate-text [db]
-  (let [nav (nav/construct db linkers)
-        direct-from-source
-        (fn [dir source] (map (dir target db nav) source))]
+(defn build-director [db nav]
+  (fn [dir from] (map (dir target db nav) from)))
+
+(defn migrate-text [host]
+  (let [linkers (rt/linkers host)
+        db (load-db)
+        director (build-director db (nav/construct db linkers))]
     (->> source
          calc-sources
          (map files/read-contents)
          categorize
-         (mapcat direct-from-source directions)
+         (mapcat director (directions linkers))
          (map files/write-out)
          dorun)))
 
@@ -70,6 +71,9 @@
        (map (partial apply files/cp))
        dorun))
 
-(defn exec []
-  (migrate-text (load-db))
+(defn deploy [host]
+  (migrate-text host)
   (migrate-assets))
+
+(defn deploy->local []
+  (deploy (str "localhost" target)))
