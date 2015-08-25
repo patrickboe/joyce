@@ -77,3 +77,5 @@
 
 (defn deploy->local []
   (deploy (str "localhost" target)))
+
+(defn -main [& args] (deploy (first args)))

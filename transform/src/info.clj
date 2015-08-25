@@ -25,11 +25,11 @@
         dl-content (interleave symbols defs)]
     (assoc n :content dl-content)))
 
-(def nonempty-node?
-  (comp not empty-node?))
-
 (defn empty-node? [n]
   (and (map? n) (empty? (:content n))))
+
+(def nonempty-node?
+  (comp not empty-node?))
 
 (defn node-matches? [re]
   (fn [n]
