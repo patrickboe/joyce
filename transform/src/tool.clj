@@ -1,4 +1,5 @@
 (ns tool
+  (:gen-class)
   (:require [net.cgrand.enlive-html :as en]
             [rendering :as render] [routing :as rt]
             [files] [nav] [note] [chapter] [info] [coding] [data]))
