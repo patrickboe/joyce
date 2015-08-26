@@ -6,13 +6,11 @@ module.exports = function(grunt) {
   },
   paths = shell.ls(["dist/chapters/*.html","dist/notes/*.html","dist/info/*.html"]).map(webpath);
 
-  console.log(paths);
-
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     pagespeed: {
         options: {
-          key: process.env.PAGESPEED_API_KEY
+          key: process.env.PAGESPEED_API_KEY,
           url: "http://05093a3aa61c2575bf27-bce33873b3e004c2e98272b24eb2f01a.r94.cf5.rackcdn.com"
         },
         paths: {
@@ -20,7 +18,7 @@ module.exports = function(grunt) {
             paths: paths,
             locale: "en_GB",
             strategy: "mobile",
-            threshold: 80
+            threshold: 90
           }
         }
     }
