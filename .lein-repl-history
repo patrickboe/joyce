@@ -1,0 +1,5 @@
+exit
+(require 'jpmobile.transform.tool :as tool)
+(require 'jpmobile.transform.tool)
+(jpmobile.transform.tool/deploy->local)
+exit
