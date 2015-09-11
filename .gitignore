@@ -1,6 +1,8 @@
 #project-specific
 dist/
 orig/
+joyce.har
+pagespeed.log
 
 #clojure
 pom.xml
