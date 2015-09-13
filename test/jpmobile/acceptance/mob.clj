@@ -17,7 +17,7 @@
 
 (defn webpath [filepath] (str "http://" test-host "/" (join "/" (drop 1 (split filepath #"/")))))
 
-(def pages (trace (map webpath (mapcat html-in ["dist/chapters" "dist/notes" "dist/info"]))))
+(def pages (map webpath (mapcat html-in ["dist/chapters" "dist/notes" "dist/info"])))
 
 (defn proxied-chrome-driver [bm-proxy]
   (let [prox (ClientUtil/createSeleniumProxy bm-proxy)
@@ -30,14 +30,42 @@
     (.newPage bm-proxy addy)
     (to addy)))
 
+(defn load-time [har-page]
+  (list (.getId har-page) (.getOnLoad (.getPageTimings har-page)) ))
+
+(defn read-load-times [bm-proxy]
+  (map load-time (drop 1 (.getPages (.getLog (.endHar bm-proxy))))))
+
+(defn at-percentile [k f xs]
+  (let [n (count xs)
+        pos (int (Math/floor (/ (* (+ k 1) n) 100)))]
+    (nth (sort-by f xs) pos)))
+
+(def rates {:3G {:down-Bps 100000 :up-Bps 50000 :latency-ms 100}})
+
+(def unstyled-site-90th-percentile-load-time 1881)
+
+(defn make-3G-network-simulator []
+  (let [rate (rates :3G)]
+    (doto (new BrowserMobProxyServer)
+      (.start)
+      (.setReadBandwidthLimit (rate :down-Bps))
+      (.setWriteBandwidthLimit (rate :up-Bps))
+      (.setLatency (rate :latency-ms) java.util.concurrent.TimeUnit/MILLISECONDS))))
+
+(defn pages-should-have-loaded-quickly [bmproxy]
+  (let [load-time-90th-percentile (at-percentile 90 second (read-load-times bmproxy))
+      threshold (long (Math/ceil (* 1.1 unstyled-site-90th-percentile-load-time)))]
+  (is (< (second load-time-90th-percentile) threshold)
+      (str "Load time threshold for 90th percentile page exceeded at " load-time-90th-percentile))))
+
 (deftest ^:acceptance collect-full-har
-  (let [bmproxy (new BrowserMobProxyServer)]
-    (.start bmproxy)
+  (let [bmproxy (make-3G-network-simulator)]
     (try
       (set-driver! (init-driver (proxied-chrome-driver bmproxy)))
       (try
-        (.newHar bmproxy "joyce-bench")
+        (.newHar bmproxy)
         (dorun (map (visit-from bmproxy) pages))
-        (.writeTo (.getHar bmproxy) (file "joyce.har"))
+        (pages-should-have-loaded-quickly bmproxy)
         (finally (quit)))
       (finally (.stop bmproxy)))))
