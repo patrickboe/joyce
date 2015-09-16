@@ -92,5 +92,6 @@
 
     { :chapter->url (linker-from "chapters")
       :info->url (linker-from "info")
+      :resource (make-protocol-relative host)
       :rewrite-from-chapter (rewrite-for host "")
       :rewrite-from-note (rewrite-for host "notes/") }))

@@ -8,6 +8,13 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
+    less: {
+      development: {
+        files: {
+          "dist/style/site.css" : ["src/jpmobile/style/site.less"]
+        }
+      }
+    },
     pagespeed: {
         options: {
           key: process.env.PAGESPEED_API_KEY,
@@ -25,4 +32,6 @@ module.exports = function(grunt) {
   });
 
   grunt.loadNpmTasks('grunt-pagespeed');
+
+  grunt.loadNpmTasks('grunt-contrib-less');
 };

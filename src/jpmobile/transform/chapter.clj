@@ -1,7 +1,6 @@
 (ns jpmobile.transform.chapter
   (:require [net.cgrand.enlive-html :as en]
             [jpmobile.transform.edits :as edits]
-            [jpmobile.transform.nav :as nav]
             [clojure.tools.trace :as tr]
             [clojure.string :as st]))
 
@@ -33,7 +32,7 @@
   (apply comp (map en/remove-class cs)))
 
 (defn rewrite-chapter [linker]
-  (fn [database nav docname]
+  (fn [host database docname]
     (let [situate (situate-in linker)
           code-link (apply-link-category database)
           lookup-title (chapter-map database)
@@ -53,4 +52,4 @@
 
             [[:span (en/attr? :id)]]
             cite-page)]
-      (comp (partial edits/host-content title nav) tfm get-main))))
+      (comp (partial host title) tfm get-main))))

@@ -70,7 +70,7 @@
 (defn rewrite-note [site]
    (let [rewrite-text (rewrite-note-text-for site)
           rewrite-images (rewrite-image-section site)]
-     (fn [db nav doc]
+     (fn [host db doc]
        (let
          [tfm (en/transformation
                 [:body] en/unwrap
@@ -83,7 +83,6 @@
                 #{[:div#images] [:div#media]}
                 rewrite-images)]
          (fn [node]
-           (edits/host-content
+           (host
              (first (en/select node [:title en/text-node]))
-             nav
              (tfm (en/select node [:body]))))))))

@@ -165,11 +165,10 @@
     [(simple-tfm title) clean-intro nav eras biblio]))
 
 (defn info-rewriter [tfm]
-  (fn [db nav doc]
+  (fn [host db doc]
     (fn [node]
-      (edits/host-content
+      (host
         (first (en/select node [:h2 :> en/text-node]))
-        nav
         (tfm (en/select node [:div.text :> :*]))))))
 
 (def rewrite-info-page (info-rewriter simple-tfm))

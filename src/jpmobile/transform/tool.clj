@@ -5,6 +5,7 @@
             [jpmobile.transform.routing :as rt]
             [jpmobile.transform.files :as files]
             [jpmobile.transform.nav :as nav]
+            [jpmobile.transform.master :as master]
             [jpmobile.transform.note :as note]
             [jpmobile.transform.chapter :as chapter]
             [jpmobile.transform.info :as info]
@@ -16,11 +17,11 @@
 (def target "/home/patrick/dev/proj/joyce/dist")
 
 (defn make-direction [rewrite route]
-  (fn [t data nav]
+  (fn [t data master]
     (fn [{n :name, c :content}]
       (struct files/finfo
               (route t n)
-              ((render/rerender (rewrite data nav (rt/docname n))) c)))))
+              ((render/rerender (rewrite master data (rt/docname n))) c)))))
 
 (defn categorize [[note-files info-files chapter-files]]
   [
@@ -56,13 +57,15 @@
        (map (comp slurp :content))
        data/site-data))
 
-(defn build-director [db nav]
-  (fn [dir from] (map (dir target db nav) from)))
+(defn build-director [db master]
+  (fn [dir from] (map (dir target db master) from)))
 
-(defn migrate-text [host]
-  (let [linkers (rt/linkers host)
+(defn migrate-text [hostname]
+  (let [linkers (rt/linkers hostname)
         db (load-db)
-        director (build-director db (nav/construct db linkers))]
+        nav (nav/construct db linkers)
+        master (partial master/joyce-page linkers nav)
+        director (build-director db master)]
     (->> source
          calc-sources
          (map files/read-contents)
@@ -79,8 +82,8 @@
        (map (partial apply files/cp))
        dorun))
 
-(defn deploy [host]
-  (migrate-text host)
+(defn deploy [hostname]
+  (migrate-text hostname)
   (migrate-assets))
 
 (defn deploy->local []
