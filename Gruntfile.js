@@ -20,15 +20,26 @@ module.exports = function(grunt) {
         tasks: ['less'],
         files: ['src/jpmobile/style/*.less']
       },
+      js: {
+        tasks: ['browserify'],
+        files: ['src/jpmobile/script/*.js']
+      },
       livereload: {
         options: { livereload: true },
-        files: ["dist/style/*.css"]
+        files: ["dist/**/*"]
       }
     },
     less: {
       development: {
         files: {
           "dist/style/site.css" : ["src/jpmobile/style/site.less"]
+        }
+      }
+    },
+    browserify: {
+      dist: {
+        files: {
+          'dist/script/site.js': ['src/jpmobile/script/site.js']
         }
       }
     },

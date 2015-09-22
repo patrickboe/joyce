@@ -9,6 +9,9 @@
     [:title]
     (en/append (str " : " title))
 
+    [:script]
+    (ed/transform-attr :src (route :resource))
+
     [:link]
     (ed/transform-attr :href (route :resource))
 
