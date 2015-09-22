@@ -12,7 +12,7 @@
             [jpmobile.transform.coding :as coding]
             [jpmobile.transform.data :as data]))
 
-(def source "/home/patrick/dev/proj/joyce/orig")
+(def sourcedir "/home/patrick/dev/proj/joyce/orig")
 
 (def target "/home/patrick/dev/proj/joyce/dist")
 
@@ -51,7 +51,7 @@
   (juxt rt/source-notes rt/source-infos rt/source-chapters))
 
 (defn load-db []
-  (->> source
+  (->> sourcedir
        rt/source-js
        files/read-contents
        (map (comp slurp :content))
@@ -66,7 +66,7 @@
         nav (nav/construct db linkers)
         master (partial master/joyce-page linkers nav)
         director (build-director db master)]
-    (->> source
+    (->> sourcedir
          calc-sources
          (map files/read-contents)
          categorize
@@ -75,10 +75,10 @@
          dorun)))
 
 (defn migrate-assets []
-  (->> source
+  (->> sourcedir
        rt/source-images
        files/list-contents
-       ((rt/route-images source target))
+       ((rt/route-images sourcedir target))
        (map (partial apply files/cp))
        dorun))
 
@@ -87,6 +87,6 @@
   (migrate-assets))
 
 (defn deploy->local []
-  (deploy (str "localhost" target)))
+  (deploy "localhost:8000"))
 
 (defn -main [& args] (deploy (first args)))

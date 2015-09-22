@@ -8,6 +8,23 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
+    connect: {
+      server: {
+        options: {
+          base: 'dist'
+        }
+      }
+    },
+    watch: {
+      css: {
+        tasks: ['less'],
+        files: ['src/jpmobile/style/*.less']
+      },
+      livereload: {
+        options: { livereload: true },
+        files: ["dist/style/*.css"]
+      }
+    },
     less: {
       development: {
         files: {
@@ -31,7 +48,5 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.loadNpmTasks('grunt-pagespeed');
-
-  grunt.loadNpmTasks('grunt-contrib-less');
+  require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
 };
