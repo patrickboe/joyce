@@ -11,20 +11,8 @@ nav {
   .pure-menu
 }
 
-nav header {
-  .pure-menu-heading
-}
-
-nav ul {
-  .pure-menu-list
-}
-
-nav ul li {
+nav li {
   .pure-menu-item
-}
-
-nav ul li a {
-  .pure-menu-link
 }
 
 .pure-img-responsive {
@@ -108,20 +96,25 @@ header {
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
 }
+
     /*
     All anchors inside the menu should be styled like this.
     */
-    #menu a {
+    nav a {
+        .pure-menu-link;
         color: #999;
-        border: none;
-        padding: 0.6em 0 0.6em 0.6em;
+    }
+
+    nav header, nav a {
+      border: none;
+      padding: 0.6em 0 0.6em 0.6em;
     }
 
     /*
     Remove all background/borders, since we are applying them to #menu.
     */
-     #menu nav,
-     #menu nav ul {
+     nav,
+     nav ul {
         border: none;
         background: transparent;
     }
@@ -129,38 +122,41 @@ header {
     /*
     Add that light border to separate items into groups.
     */
-    #menu nav ul {
+    nav ul {
+        .pure-menu-list;
         border-top: 1px solid #333;
     }
         /*
         Change color of the anchor links on hover/focus.
         */
-        #menu nav li a:hover,
-        #menu nav li a:focus {
+        nav li a:hover,
+        nav li a:focus {
             background: #333;
         }
 
     /*
     This styles the selected menu item `<li>`.
     */
-    #menu li.selected,
-    #menu header {
+    nav li.selected,
+    nav header {
         background: #1f8dd6;
     }
         /*
         This styles a link within a selected menu item `<li>`.
         */
-        #menu li.selected a {
+        nav li.selected a {
             color: #fff;
         }
 
     /*
     This styles the menu heading.
     */
-    #menu header {
+    nav header {
+        .pure-menu-heading;
         font-size: 110%;
         color: #fff;
         margin: 0;
+        text-align: left;
     }
 
 /* -- Dynamic Button For Responsive Menu -------------------------------------*/
