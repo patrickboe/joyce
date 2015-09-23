@@ -1,36 +1,43 @@
+var life = require('./life');
+
+var identity = function(x) {return x;};
+
 module.exports =
   function (window, document) {
+      life.ready(function(){
 
-      var layout   = document.getElementById('layout'),
-          menu     = document.getElementById('menu'),
-          menuLink = document.getElementById('menuLink');
+        var layout   = document.getElementById('layout'),
+            menu     = document.getElementById('menu'),
+            menuLink = document.getElementById('menuLink');
 
-      function toggleClass(element, className) {
-          var classes = element.className.split(/\s+/),
-              length = classes.length,
-              i = 0;
+        function toggleClass(element, className) {
+            var classes = element.className.split(/\s+/).filter(identity),
+                length = classes.length,
+                i = 0;
 
-          for(; i < length; i++) {
-            if (classes[i] === className) {
-              classes.splice(i, 1);
-              break;
+            for(; i < length; i++) {
+              if (classes[i] === className) {
+                classes.splice(i, 1);
+                break;
+              }
             }
-          }
-          // The className is not found
-          if (length === classes.length) {
-              classes.push(className);
-          }
+            // The className is not found
+            if (length === classes.length) {
+                classes.push(className);
+            }
 
-          element.className = classes.join(' ');
-      }
+            element.className = classes.join(' ');
+        }
 
-      menuLink.onclick = function (e) {
-          var active = 'active';
+        menuLink.onclick = function (e) {
+            var active = 'active';
 
-          e.preventDefault();
-          toggleClass(layout, active);
-          toggleClass(menu, active);
-          toggleClass(menuLink, active);
-      };
+            e.preventDefault();
+            toggleClass(layout, active);
+            toggleClass(menu, active);
+            toggleClass(menuLink, active);
+        };
+
+    });
 
   };

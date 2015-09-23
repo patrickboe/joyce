@@ -24,10 +24,21 @@ module.exports = function(grunt) {
         tasks: ['browserify'],
         files: ['src/jpmobile/script/*.js']
       },
+      templates: {
+        tasks: ['copy'],
+        files: ['src/jpmobile/template/*']
+      },
       livereload: {
         options: { livereload: true },
         files: ["dist/**/*"]
       }
+    },
+    copy: {
+      main: {
+        files: [
+          {expand: true, cwd: 'src/jpmobile/template/', src: '**', dest: 'dist/', filter: 'isFile'},
+        ],
+      },
     },
     less: {
       development: {
