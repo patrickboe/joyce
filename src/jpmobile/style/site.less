@@ -35,9 +35,9 @@ nav ul li a {
 /*
 Add transition to containers so they can push in and out.
 */
-#layout,
+body,
 #menu,
-.menu-link {
+#hamburger {
     -webkit-transition: all 0.2s ease-out;
     -moz-transition: all 0.2s ease-out;
     -ms-transition: all 0.2s ease-out;
@@ -48,16 +48,16 @@ Add transition to containers so they can push in and out.
 /*
 This is the parent `<div>` that contains the menu and the content area.
 */
-#layout {
+body {
     position: relative;
     padding-left: 0;
 }
-    #layout.active #menu {
+    body.active #menu {
         left: 150px;
         width: 150px;
     }
 
-    #layout.active .menu-link {
+    body.active #hamburger {
         left: 150px;
     }
 /*
@@ -171,10 +171,10 @@ how it works:
 */
 
 /*
-`.menu-link` represents the responsive menu toggle that shows/hides on
+`#hamburger` represents the responsive menu toggle that shows/hides on
 small screens.
 */
-.menu-link {
+#hamburger {
     position: fixed;
     display: block; /* show this only on small screens */
     top: 0;
@@ -188,32 +188,32 @@ small screens.
     padding: 2.1em 1.6em;
 }
 
-    .menu-link:hover,
-    .menu-link:focus {
+    #hamburger:hover,
+    #hamburger:focus {
         background: #000;
     }
 
-    .menu-link span {
+    #hamburger span {
         position: relative;
         display: block;
     }
 
-    .menu-link span,
-    .menu-link span:before,
-    .menu-link span:after {
+    #hamburger span,
+    #hamburger span:before,
+    #hamburger span:after {
         background-color: #fff;
         width: 100%;
         height: 0.2em;
     }
 
-        .menu-link span:before,
-        .menu-link span:after {
+        #hamburger span:before,
+        #hamburger span:after {
             position: absolute;
             margin-top: -0.6em;
             content: " ";
         }
 
-        .menu-link span:after {
+        #hamburger span:after {
             margin-top: 0.6em;
         }
 
@@ -231,7 +231,7 @@ Hides the menu at `48em`, but modify this based on your app's needs.
         padding-right: 2em;
     }
 
-    #layout {
+    body {
         padding-left: 150px; /* left col width "#menu" */
         left: 0;
     }
@@ -240,13 +240,13 @@ Hides the menu at `48em`, but modify this based on your app's needs.
         left: 150px;
     }
 
-    .menu-link {
+    #hamburger {
         position: fixed;
         left: 150px;
         display: none;
     }
 
-    #layout.active .menu-link {
+    body.active #hamburger {
         left: 150px;
     }
 }
@@ -258,7 +258,7 @@ Hides the menu at `48em`, but modify this based on your app's needs.
         * Tap the menu to trigger the active state.
         * Make the window large again.
     */
-    #layout.active {
+    body.active {
         position: relative;
         left: 150px;
     }

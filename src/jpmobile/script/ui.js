@@ -6,9 +6,9 @@ module.exports =
   function (window, document) {
       life.ready(function(){
 
-        var layout   = document.getElementById('layout'),
+        var layout   = document.querySelector('body'),
             menu     = document.getElementById('menu'),
-            menuLink = document.getElementById('menuLink');
+            hamburger = document.getElementById('hamburger');
 
         function toggleClass(element, className) {
             var classes = element.className.split(/\s+/).filter(identity),
@@ -29,13 +29,13 @@ module.exports =
             element.className = classes.join(' ');
         }
 
-        menuLink.onclick = function (e) {
+        hamburger.onclick = function (e) {
             var active = 'active';
 
             e.preventDefault();
             toggleClass(layout, active);
             toggleClass(menu, active);
-            toggleClass(menuLink, active);
+            toggleClass(hamburger, active);
         };
 
     });
