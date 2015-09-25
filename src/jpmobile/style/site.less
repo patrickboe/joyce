@@ -63,42 +63,63 @@ body.navigating {
     }
 }
 
-/*
-The content `<div>` is where all your content goes.
-*/
 .content {
-    margin: 0 auto;
-    padding: 0 2em;
-    max-width: 800px;
-    margin-bottom: 50px;
-    line-height: 1.6em;
-
-    h2 {
-        margin: 50px 0 20px 0;
-        font-weight: 300;
-        color: #888;
-    }
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-header {
-     margin: 0;
-     color: #333;
-     text-align: center;
-     padding: 2.5em 2em 0;
-     border-bottom: 1px solid #eee;
+main {
+    margin-bottom: 50px;
 
-      h1 {
-          margin: 0.2em 0;
-          font-size: 3em;
-          font-weight: 300;
-      }
+    header {
+         margin: 0;
+         color: #333;
+         text-align: center;
+         padding: 2.5em 2em 0;
+         border-bottom: 1px solid #eee;
 
-      h2 {
-          font-weight: 300;
-          color: #ccc;
-          padding: 0;
-          margin-top: 0;
-      }
+         h1, h2 {
+              font-weight: 300;
+              max-width: inherit;
+         }
+
+          h1 {
+              margin: 0.2em 0;
+              font-size: 3em;
+          }
+
+          h2 {
+              color: #ccc;
+              padding: 0;
+              margin-top: 0;
+          }
+    }
+
+    ul.gallery {
+      padding: 0;
+
+      .pure-g;
+      .content;
+
+      li { .pure-u-1-4; }
+    }
+
+    p {
+      line-height: 1.6em;
+      .content;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        margin: 50px auto 20px;
+        font-weight: 300;
+        color: #888;
+        .content;
+    }
+
+    div.pure-g {
+      .content;
+    }
 }
 
 nav {
@@ -112,9 +133,6 @@ nav {
     background: #191818;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-}
-
-nav {
 
     ul {
       background: transparent;
