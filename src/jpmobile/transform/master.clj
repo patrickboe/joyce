@@ -18,8 +18,5 @@
     [:nav]
     (en/substitute nav)
 
-    [:h1]
-    (en/content title)
-
     [:main]
-    (en/content main))
+    (en/content (cons {:tag :h1, :content title} main)))

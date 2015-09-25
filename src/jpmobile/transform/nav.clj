@@ -2,7 +2,7 @@
   (:require [net.cgrand.enlive-html :as en]))
 
 (en/defsnippet link "jpmobile/template/sample.html"
-  [:nav [:section en/first-of-type] :ul :li]
+  [:nav [:section en/first-of-type] :ul [:li en/first-of-type]]
   [[url title]]
   [:a] (en/do->
          (en/set-attr :href url)
