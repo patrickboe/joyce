@@ -15,7 +15,34 @@ nav li {
   .pure-menu-item
 }
 
-.pure-img-responsive {
+    /*
+    Add that light border to separate items into groups.
+    */
+    nav ul {
+        .pure-menu-list;
+        border-top: 1px solid #333;
+    }
+
+    /*
+    This styles the menu heading.
+    */
+    nav header {
+        .pure-menu-heading;
+        font-size: 110%;
+        color: #fff;
+        margin: 0;
+        text-align: left;
+    }
+
+    /*
+    All anchors inside the menu should be styled like this.
+    */
+    nav a {
+        .pure-menu-link;
+        color: #999;
+    }
+
+img {
     max-width: 100%;
     height: auto;
 }
@@ -97,13 +124,6 @@ header {
     -webkit-overflow-scrolling: touch;
 }
 
-    /*
-    All anchors inside the menu should be styled like this.
-    */
-    nav a {
-        .pure-menu-link;
-        color: #999;
-    }
 
     nav header, nav a {
       border: none;
@@ -119,13 +139,6 @@ header {
         background: transparent;
     }
 
-    /*
-    Add that light border to separate items into groups.
-    */
-    nav ul {
-        .pure-menu-list;
-        border-top: 1px solid #333;
-    }
         /*
         Change color of the anchor links on hover/focus.
         */
@@ -147,17 +160,6 @@ header {
         nav li.selected a {
             color: #fff;
         }
-
-    /*
-    This styles the menu heading.
-    */
-    nav header {
-        .pure-menu-heading;
-        font-size: 110%;
-        color: #fff;
-        margin: 0;
-        text-align: left;
-    }
 
 /* -- Dynamic Button For Responsive Menu -------------------------------------*/
 
