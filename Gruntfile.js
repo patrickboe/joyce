@@ -72,7 +72,7 @@ module.exports = function(grunt) {
 
   require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
 
-  grunt.registerTask('dev', ['connect', 'listen']);
+  grunt.registerTask('dev', ['connect', 'watch']);
 
   grunt.registerTask('default', ['less', 'browserify']);
 };

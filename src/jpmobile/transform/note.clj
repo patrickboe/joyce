@@ -50,12 +50,17 @@
     (en/transformation
       [:div#note]
       (comp
-        (edits/change-tag :summary)
+        (edits/change-tag :section)
+        (en/prepend {:tag :h2 :content ["In Brief"]})
+        (en/add-class "brief")
         (en/remove-attr :id))
 
       [:div#expandednote]
       (comp
-        (edits/change-tag :details)
+        (edits/change-tag :section)
+        (en/prepend {:tag :h2 :content ["Read More"]})
+        (en/add-class "read-more")
+        (en/remove-attr :id)
         (en/remove-attr :style))
 
       [:div#return]
@@ -69,7 +74,7 @@
 
 (defn rewrite-note [site]
    (let [rewrite-text (rewrite-note-text-for site)
-          rewrite-images (rewrite-image-section site)]
+         rewrite-images (rewrite-image-section site)]
      (fn [host db doc]
        (let
          [tfm (en/transformation

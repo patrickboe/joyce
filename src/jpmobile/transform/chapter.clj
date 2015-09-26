@@ -44,8 +44,8 @@
             (comp situate
                   (en/remove-attr :id)
                   code-link
-                  (remove-classes ["box-images" "box-images-med" "box-images-short" "box-media"])
-                  (en/set-attr :rel "sidebar"))
+                  (en/add-class "note")
+                  (remove-classes ["box-images" "box-images-med" "box-images-short" "box-media"]))
 
             [:p]
             (en/remove-class "newchapter")

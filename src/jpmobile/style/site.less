@@ -3,6 +3,18 @@
 @import "menus.less";
 @import "grids.less";
 
+a.note { color: darkblue; }
+a.note.artist { color: #307EE3; }
+a.note.bodily { color: #CF2929; }
+a.note.dublin { color: #9C632A; }
+a.note.literature { color: #F59627; }
+a.note.ireland { color: #40B324; }
+a.note.performances { color: #AB59C2; }
+
+cite.page { display: none; }
+
+@menu-width: 180px;
+
 nav {
   .pure-menu
 
@@ -54,12 +66,12 @@ body {
 body.navigating {
 
     nav {
-        left: 150px;
-        width: 150px;
+        left: @menu-width;
+        width: @menu-width;
     }
 
     #hamburger {
-        left: 150px;
+        left: @menu-width;
     }
 }
 
@@ -79,7 +91,7 @@ main {
 
     h1 {
         color: #333;
-        padding: 0.8em 1em 0.5em;
+        padding: 0.8em 0 0.5em;
         margin: 0;
         text-align: center;
         border-bottom: 1px solid #eee;
@@ -112,8 +124,8 @@ main {
 }
 
 nav {
-    margin-left: -150px;
-    width: 150px;
+    margin-left: -@menu-width;
+    width: @menu-width;
     position: fixed;
     top: 0;
     left: 0;
@@ -221,22 +233,22 @@ Hides the menu at `48em`, but modify this based on your app's needs.
 @media (min-width: 48em) {
 
     body {
-        padding-left: 150px;
+        padding-left: @menu-width;
         left: 0;
     }
 
     nav {
-        left: 150px;
+        left: @menu-width;
     }
 
     #hamburger {
         position: fixed;
-        left: 150px;
+        left: @menu-width;
         display: none;
     }
 
     body.navigating #hamburger {
-        left: 150px;
+        left: @menu-width;
     }
 }
 
@@ -249,7 +261,7 @@ Hides the menu at `48em`, but modify this based on your app's needs.
     */
     body.navigating {
         position: relative;
-        left: 150px;
+        left: @menu-width;
     }
 }
 
