@@ -4,7 +4,7 @@
   (not (= b "#000000")))
 
 (def coding-re
-  #"\s*document\.getElementById\(\'(\w+)\'\)\.style\.color\s*=\s*\'(#\w+)\';")
+  #"\s*document\.getElementById\(\'(\w+)\'\)\.style\.color\s*=\s*\'(#\w+)\';?\s*")
 
 (def color-lookup
   {"#40B324" "ireland"
@@ -15,7 +15,7 @@
    "#307EE3" "artist"})
 
 (defn generate-coding [id hex]
-  [id (color-lookup hex)])
+  [id (color-lookup (clojure.string/upper-case hex))])
 
 (defn script->codings [lines]
   (map (partial apply generate-coding)
