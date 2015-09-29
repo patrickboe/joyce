@@ -11,6 +11,7 @@ pom.xml.asc
 /lib/
 /classes/
 /target/
+/stage/
 /checkouts/
 .lein-deps-sum
 .lein-repl-history

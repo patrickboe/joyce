@@ -17,14 +17,14 @@ module.exports = function(grunt) {
     },
     watch: {
       css: {
-        tasks: ['less'],
+        tasks: ['less:dev'],
         files: ['src/jpmobile/style/*.less']
       },
       js: {
         tasks: ['browserify'],
         files: ['src/jpmobile/script/*.js']
       },
-      templates: {
+      cp: {
         tasks: ['copy'],
         files: ['src/jpmobile/template/*']
       },
@@ -34,14 +34,26 @@ module.exports = function(grunt) {
       }
     },
     copy: {
-      main: {
+      dev: {
         files: [
-          {expand: true, cwd: 'src/jpmobile/template/', src: '**', dest: 'dist/', filter: 'isFile'},
+          {expand: true, cwd: 'src/jpmobile/template/', src: '**', dest: 'dist/', filter: 'isFile'}
         ],
       },
     },
+    cssmin: {
+      dist: {
+        files: {
+          'dist/style/site.css' : ['stage/style/site.css']
+        }
+      }
+    },
     less: {
-      development: {
+      prod: {
+        files: {
+          "stage/style/site.css" : ["src/jpmobile/style/site.less"]
+        }
+      },
+      dev: {
         files: {
           "dist/style/site.css" : ["src/jpmobile/style/site.less"]
         }
@@ -74,5 +86,5 @@ module.exports = function(grunt) {
 
   grunt.registerTask('dev', ['connect', 'watch']);
 
-  grunt.registerTask('default', ['less', 'browserify']);
+  grunt.registerTask('default', ['less:prod', 'cssmin', 'browserify']);
 };
