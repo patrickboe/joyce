@@ -5,6 +5,11 @@
 
 @import url(https://fonts.googleapis.com/css?family=Roboto);
 
+@bg-lite: #def0e0;
+@bg-strong: #a7d4bc;
+@bg-contrast-lite: #ffe6b7;
+@bg-contrast: #ce882d;
+
 body { font-family: 'Roboto', sans-serif; }
 
 a.note { color: darkblue; }
@@ -39,7 +44,7 @@ nav {
 
   a {
     .pure-menu-link;
-    color: #999;
+    color: #555;
   }
 }
 
@@ -137,7 +142,7 @@ nav {
     left: 0;
     bottom: 0;
     z-index: 1000; /* so the menu or its navicon stays above all content */
-    background: #191818;
+    background: @bg-lite;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
 
@@ -156,7 +161,7 @@ nav {
     */
     li a:hover,
     li a:focus {
-        background: #333;
+        background: @bg-strong;
     }
 
     /*
@@ -164,7 +169,7 @@ nav {
     */
     li.selected,
     header {
-        background: #1f8dd6;
+        background: @bg-contrast;
     }
 
     /*
@@ -192,13 +197,12 @@ small screens.
     display: block; /* show this only on small screens */
     top: 0;
     left: 0; /* "#menu width" */
-    background: #000;
-    background: rgba(0,0,0,0.7);
+    background: @bg-contrast;
     font-size: 10px; /* change this value to increase/decrease button size */
     z-index: 10;
     width: 2em;
     height: auto;
-    padding: 2.1em 1.6em;
+    padding: 2em 1.6em;
 
     span {
         position: relative;
@@ -227,7 +231,7 @@ small screens.
 
 #hamburger:hover,
 #hamburger:focus {
-    background: #000;
+    background: @bg-contrast;
 }
 
 
