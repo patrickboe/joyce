@@ -12,7 +12,7 @@
     [:script]
     (ed/transform-attr :src (route :resource))
 
-    [:link]
+    [[:link en/last-of-type]]
     (ed/transform-attr :href (route :resource))
 
     [:nav]

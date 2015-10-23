@@ -11,7 +11,7 @@ module.exports = function(grunt) {
     connect: {
       server: {
         options: {
-          base: 'dist'
+          base: { path: 'dist', options: { maxAge: 1000 * 60 * 60 } }
         }
       }
     },
