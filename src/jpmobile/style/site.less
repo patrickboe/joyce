@@ -238,7 +238,7 @@ small screens.
 /* -- Responsive Styles (Media Queries) ------------------------------------- */
 
 /*
-Hides the menu at `48em`, but modify this based on your app's needs.
+Hides the menu at `48em`
 */
 @media (min-width: 48em) {
 
@@ -252,8 +252,6 @@ Hides the menu at `48em`, but modify this based on your app's needs.
     }
 
     #hamburger {
-        position: fixed;
-        left: @menu-width;
         display: none;
     }
 
@@ -272,6 +270,10 @@ Hides the menu at `48em`, but modify this based on your app's needs.
     body.navigating {
         position: relative;
         left: @menu-width;
+    }
+
+    body.reading #hamburger {
+      display:none;
     }
 }
 
