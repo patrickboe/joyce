@@ -4,6 +4,7 @@ module.exports = function(grunt) {
   var webpath = function(path) {
     return "/" + path.split("/").slice(1).join("/");
   },
+  oneHourInMs =1000 * 60 * 60,
   paths = shell.ls(["dist/chapters/*.html","dist/notes/*.html","dist/info/*.html"]).map(webpath);
 
   grunt.initConfig({
@@ -11,7 +12,7 @@ module.exports = function(grunt) {
     connect: {
       server: {
         options: {
-          base: { path: 'dist', options: { maxAge: 1000 * 60 * 60 } }
+          base: { path: 'dist', options: { maxAge: 0 } }
         }
       }
     },

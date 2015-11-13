@@ -29,7 +29,89 @@ module.exports =
 
         var layout   = document.querySelector('body'),
             nav = document.querySelector('nav'),
+            main = document.querySelector('main'),
             hamburger = layout.insertBefore(make('<a id="hamburger"><span></span></a>'),nav),
+
+            swipeDownMonitor = function(onSwipe){
+              var nullTouch = {identifier:null},
+                  lastTouch = nullTouch,
+                  moveMon = function(e){
+                    var t = e.touches[0];
+                    if(t.identifier==lastTouch.identifier){
+                      if(lastTouch.screenY <  t.screenY) {
+                        onSwipe();
+                      }
+                      lastTouch = t;
+                    }
+                  },
+                  startMon = function(e){
+                    var touches = e.changedTouches;
+                    if(touches.length==1) {
+                      lastTouch=touches[0];
+                    }
+                  },
+                  endMon = function(e) {
+                    var t = e.touches[0];
+                    if(t.identifier==lastTouch.identifier){
+                      lastTouch=nullTouch;
+                    }
+                  },
+                  cancelMon = function(e) {
+                    var t = e.touches[0];
+                    if(t.identifier==lastTouch.identifier){
+                      lastTouch=nullTouch;
+                    }
+                  },
+                  self = {
+                    dispose: function(){
+                      main.removeEventListener('touchmove', moveMon);
+                      main.removeEventListener('touchstart', startMon);
+                      main.removeEventListener('touchend', endMon);
+                      main.removeEventListener('touchcancel', cancelMon);
+                    }
+                  };
+              main.addEventListener('touchmove', moveMon);
+              main.addEventListener('touchstart', startMon);
+              main.addEventListener('touchend', endMon);
+              main.addEventListener('touchcancel', cancelMon);
+              return self;
+            },
+
+            scrollUpMonitor = function(onScroll){
+              var scrollY = window.scrollY,
+
+                scrollMonitor = function(){
+                  var prevY = scrollY;
+                  scrollY = window.scrollY;
+                  if(scrollY < prevY) { onScroll(); }
+                },
+
+                dampenedScrollMonitor = dampen(scrollMonitor,30),
+
+                self = {
+                  dispose : function(){
+                    window.removeEventListener("scroll",dampenedScrollMonitor.execute);
+                    dampenedScrollMonitor.dispose();
+                  }
+                }
+              window.addEventListener('scroll', dampenedScrollMonitor.execute);
+
+              return self;
+            },
+
+            menuSeekingMonitor = function(onSeek){
+                var swipeMon = swipeDownMonitor(onSeek),
+                    //scrollMon = scrollUpMonitor(onSeek),
+
+                self = {
+                  dispose : function(){
+                    swipeMon.dispose();
+                    //scrollMon.dispose();
+                  }
+                };
+
+                return self;
+            },
 
             navigating = function(){
               var self = {
@@ -48,7 +130,7 @@ module.exports =
 
             browsing = function(){
               var setIdle = function(){ processUIEvent("idle") }
-                idleTimeout = window.setTimeout(setIdle, 5000),
+                idleTimeout = window.setTimeout(setIdle, 3000),
                 self = {
                   transition : function(event){
                     switch(event) {
@@ -64,27 +146,20 @@ module.exports =
             },
 
             reading = function(){
-              var scrollY = window.scrollY;
-                scrollMonitor = function(){
-                  var prevY = scrollY;
-                  scrollY = window.scrollY;
-                  if(scrollY < prevY) { processUIEvent("scrolling up"); }
-                },
-                dampenedScrollMonitor = dampen(scrollMonitor,30),
+                var seekMon = menuSeekingMonitor(function(){processUIEvent("seeking menu")}),
                 self = {
                   transition : function(event){
                     switch(event) {
-                      case "scrolling up" :
-                        window.removeEventListener("scroll",dampenedScrollMonitor.execute);
-                        dampenedScrollMonitor.dispose();
+                      case "seeking menu" :
+                        seekMon.dispose();
                         layout.classList.remove('reading');
                         return browsing();
                       default : return self;
                     }
                   }
                 };
+
               layout.classList.add('reading');
-              window.addEventListener("scroll",dampenedScrollMonitor.execute);
               return self;
             },
 
