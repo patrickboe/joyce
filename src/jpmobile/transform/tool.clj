@@ -87,6 +87,6 @@
   (migrate-assets))
 
 (defn deploy->local []
-  (deploy "pica:8000"))
+  (deploy "192.168.1.5:8000"))
 
 (defn -main [& args] (deploy (first args)))

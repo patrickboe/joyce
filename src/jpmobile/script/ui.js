@@ -31,49 +31,44 @@ module.exports =
             nav = document.querySelector('nav'),
             main = document.querySelector('main'),
             hamburger = layout.insertBefore(make('<a id="hamburger"><span></span></a>'),nav),
+            hamburgerSpan = hamburger.querySelector('span'),
+
+            status = function(message){
+              hamburgerSpan.innerHTML = message;
+            },
 
             swipeDownMonitor = function(onSwipe){
-              var nullTouch = {identifier:null},
-                  lastTouch = nullTouch,
+              var lastY = 999999,
                   moveMon = function(e){
-                    var t = e.touches[0];
-                    if(t.identifier==lastTouch.identifier){
-                      if(lastTouch.screenY <  t.screenY) {
-                        onSwipe();
-                      }
-                      lastTouch = t;
+                    var touches=e.changedTouches,
+                    y0 = lastY,
+                    y = touches[0].clientY;
+                    if(touches.length==1) {
+                      if(y0 < y) onSwipe();
+                      lastY = y;
                     }
                   },
                   startMon = function(e){
                     var touches = e.changedTouches;
                     if(touches.length==1) {
-                      lastTouch=touches[0];
+                      lastY=touches[0].clientY;
                     }
                   },
                   endMon = function(e) {
-                    var t = e.touches[0];
-                    if(t.identifier==lastTouch.identifier){
-                      lastTouch=nullTouch;
-                    }
-                  },
-                  cancelMon = function(e) {
-                    var t = e.touches[0];
-                    if(t.identifier==lastTouch.identifier){
-                      lastTouch=nullTouch;
-                    }
+                    lastY=999999;
                   },
                   self = {
                     dispose: function(){
                       main.removeEventListener('touchmove', moveMon);
                       main.removeEventListener('touchstart', startMon);
                       main.removeEventListener('touchend', endMon);
-                      main.removeEventListener('touchcancel', cancelMon);
+                      main.removeEventListener('touchcancel', endMon);
                     }
                   };
               main.addEventListener('touchmove', moveMon);
               main.addEventListener('touchstart', startMon);
               main.addEventListener('touchend', endMon);
-              main.addEventListener('touchcancel', cancelMon);
+              main.addEventListener('touchcancel', endMon);
               return self;
             },
 
@@ -146,7 +141,9 @@ module.exports =
             },
 
             reading = function(){
-                var seekMon = menuSeekingMonitor(function(){processUIEvent("seeking menu")}),
+                var seekMon = menuSeekingMonitor(function(){
+                  processUIEvent("seeking menu")
+                }),
                 self = {
                   transition : function(event){
                     switch(event) {
