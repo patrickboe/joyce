@@ -1,62 +1,51 @@
 var life = require('./life');
 
-var identity = function(x) {return x;};
-
 module.exports =
-  function (document) {
+  function (document,timers) {
       var make = function(html) {
           var box = document.createElement('div');
           box.innerHTML = html;
           return box.firstChild;
-      },
-      dampen = function(f,t){
-        var called=false,
-        poll = function(){
-          if(called){
-            called = false;
-            f();
-          }
-        },
-        iv = window.setInterval(poll,t);
-
-        return {
-          execute : function(){ called = true; },
-          dispose : function() { window.clearInterval(iv); }
-        };
       };
 
       life.ready(function(){
 
-        var layout   = document.querySelector('body'),
+        var body   = document.querySelector('body'),
             nav = document.querySelector('nav'),
             main = document.querySelector('main'),
-            hamburger = layout.insertBefore(make('<a id="hamburger"><span></span></a>'),nav),
+            hamburger = body.insertBefore(make('<a id="hamburger"><span></span></a>'),nav),
             hamburgerSpan = hamburger.querySelector('span'),
 
             status = function(message){
               hamburgerSpan.innerHTML = message;
             },
 
+            toSingleTouchHandler = function(touchHandler) {
+              return function(e) {
+                if(e.changedTouches.length==1) touchHandler(e);
+              };
+            },
+
+            constitutesASwipe = function(pixelsMoved){
+              return pixelsMoved > 30
+            },
+
             swipeDownMonitor = function(onSwipe){
-              var lastY = 999999,
-                  moveMon = function(e){
-                    var touches=e.changedTouches,
-                    y0 = lastY,
-                    y = touches[0].clientY;
-                    if(touches.length==1) {
-                      if(y0 < y) onSwipe();
-                      lastY = y;
+              var highestTouch = NaN,
+                  moveMon = toSingleTouchHandler(function(e){
+                    var y = e.changedTouches[0].clientY;
+                    if(isNaN(highestTouch) || y < highestTouch) {
+                      highestTouch=y;
+                    } else if(constitutesASwipe(y - highestTouch)) {
+                      onSwipe();
                     }
-                  },
-                  startMon = function(e){
-                    var touches = e.changedTouches;
-                    if(touches.length==1) {
-                      lastY=touches[0].clientY;
-                    }
-                  },
-                  endMon = function(e) {
-                    lastY=999999;
-                  },
+                  }),
+                  startMon = toSingleTouchHandler(function(e){
+                    highestTouch=e.changedTouches[0].clientY;
+                  }),
+                  endMon = toSingleTouchHandler(function(e) {
+                    highestTouch=NaN;
+                  }),
                   self = {
                     dispose: function(){
                       main.removeEventListener('touchmove', moveMon);
@@ -72,65 +61,30 @@ module.exports =
               return self;
             },
 
-            scrollUpMonitor = function(onScroll){
-              var scrollY = window.scrollY,
-
-                scrollMonitor = function(){
-                  var prevY = scrollY;
-                  scrollY = window.scrollY;
-                  if(scrollY < prevY) { onScroll(); }
-                },
-
-                dampenedScrollMonitor = dampen(scrollMonitor,30),
-
-                self = {
-                  dispose : function(){
-                    window.removeEventListener("scroll",dampenedScrollMonitor.execute);
-                    dampenedScrollMonitor.dispose();
-                  }
-                }
-              window.addEventListener('scroll', dampenedScrollMonitor.execute);
-
-              return self;
-            },
-
-            menuSeekingMonitor = function(onSeek){
-                var swipeMon = swipeDownMonitor(onSeek),
-                    //scrollMon = scrollUpMonitor(onSeek),
-
-                self = {
-                  dispose : function(){
-                    swipeMon.dispose();
-                    //scrollMon.dispose();
-                  }
-                };
-
-                return self;
-            },
-
             navigating = function(){
               var self = {
                 transition : function(event){
                   switch(event) {
-                    case "user toggle" :
-                      layout.classList.remove('navigating');
+                    case "seeking text":
+                    case "user toggle":
+                      body.classList.remove('navigating');
                       return browsing();
                     default : return self;
                   }
                 }
               };
-              layout.classList.add('navigating');
+              body.classList.add('navigating');
               return self;
             },
 
             browsing = function(){
               var setIdle = function(){ processUIEvent("idle") }
-                idleTimeout = window.setTimeout(setIdle, 3000),
+                idleTimeout = timers.setTimeout(setIdle, 2500),
                 self = {
                   transition : function(event){
                     switch(event) {
-                      case "user toggle" :
-                        window.clearTimeout(idleTimeout);
+                      case "user toggle":
+                        timers.clearTimeout(idleTimeout);
                         return navigating();
                       case "idle" : return reading();
                       default : return self;
@@ -141,7 +95,7 @@ module.exports =
             },
 
             reading = function(){
-                var seekMon = menuSeekingMonitor(function(){
+                var seekMon = swipeDownMonitor(function(){
                   processUIEvent("seeking menu")
                 }),
                 self = {
@@ -149,30 +103,32 @@ module.exports =
                     switch(event) {
                       case "seeking menu" :
                         seekMon.dispose();
-                        layout.classList.remove('reading');
+                        body.classList.remove('reading');
                         return browsing();
                       default : return self;
                     }
                   }
                 };
 
-              layout.classList.add('reading');
+              body.classList.add('reading');
               return self;
             },
 
-            processUIEvent = function(){
+            processUIEvent = (function(){
               var self = function(event){
                 userState = userState.transition(event);
               },
               userState = browsing();
               return self;
-            }();
+            })();
 
-        hamburger.onclick = function (e) {
+        hamburger.addEventListener('click', function (e) {
             e.preventDefault();
             processUIEvent("user toggle");
-        };
-
+        });
+        main.addEventListener('click', function(e) {
+          processUIEvent("seeking text");
+        });
     });
 
   };

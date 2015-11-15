@@ -1,3 +1,3 @@
 var ui = require('./ui');
 
-ui(window.document);
+ui(window.document, window);
