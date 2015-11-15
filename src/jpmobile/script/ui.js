@@ -1,11 +1,27 @@
 var life = require('./life');
 
 module.exports =
-  function (document,timers) {
+  function (document,window) {
       var make = function(html) {
           var box = document.createElement('div');
           box.innerHTML = html;
           return box.firstChild;
+      },
+
+      dampen = function(f,t){
+        var called=false,
+        poll = function(){
+          if(called){
+            called = false;
+            f();
+          }
+        },
+        iv = window.setInterval(poll,t);
+
+        return {
+          execute : function(){ called = true; },
+          dispose : function() { window.clearInterval(iv); }
+        };
       };
 
       life.ready(function(){
@@ -28,6 +44,28 @@ module.exports =
 
             constitutesASwipe = function(pixelsMoved){
               return pixelsMoved > 30
+            },
+
+            scrollUpMonitor = function(onScroll){
+              var scrollY = window.scrollY,
+
+                scrollMonitor = function(){
+                  var prevY = scrollY;
+                  scrollY = window.scrollY;
+                  if(scrollY < prevY) { onScroll(); }
+                },
+
+                dampenedScrollMonitor = dampen(scrollMonitor,30),
+
+                self = {
+                  dispose : function(){
+                    window.removeEventListener("scroll",dampenedScrollMonitor.execute);
+                    dampenedScrollMonitor.dispose();
+                  }
+                }
+              window.addEventListener('scroll', dampenedScrollMonitor.execute);
+
+              return self;
             },
 
             swipeDownMonitor = function(onSwipe){
@@ -61,6 +99,20 @@ module.exports =
               return self;
             },
 
+            menuSeekingMonitor = function(onSeek){
+                var swipeMon = swipeDownMonitor(onSeek),
+                    scrollMon = scrollUpMonitor(onSeek),
+
+                self = {
+                  dispose : function(){
+                    swipeMon.dispose();
+                    scrollMon.dispose();
+                  }
+                };
+
+                return self;
+            },
+
             navigating = function(){
               var self = {
                 transition : function(event){
@@ -79,12 +131,12 @@ module.exports =
 
             browsing = function(){
               var setIdle = function(){ processUIEvent("idle") }
-                idleTimeout = timers.setTimeout(setIdle, 2500),
+                idleTimeout = window.setTimeout(setIdle, 2500),
                 self = {
                   transition : function(event){
                     switch(event) {
                       case "user toggle":
-                        timers.clearTimeout(idleTimeout);
+                        window.clearTimeout(idleTimeout);
                         return navigating();
                       case "idle" : return reading();
                       default : return self;
@@ -95,7 +147,7 @@ module.exports =
             },
 
             reading = function(){
-                var seekMon = swipeDownMonitor(function(){
+                var seekMon = menuSeekingMonitor(function(){
                   processUIEvent("seeking menu")
                 }),
                 self = {
