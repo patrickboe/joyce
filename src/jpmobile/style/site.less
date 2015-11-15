@@ -68,7 +68,6 @@ nav,
 
 body {
     color: #777;
-    position: relative;
     padding-left: 0;
 }
 
@@ -254,10 +253,6 @@ Hides the menu at `48em`
     #hamburger {
         display: none;
     }
-
-    body.navigating #hamburger {
-        left: @menu-width;
-    }
 }
 
 @media (max-width: 48em) {
@@ -268,8 +263,7 @@ Hides the menu at `48em`
         * Make the window large again.
     */
     body.navigating {
-        position: relative;
-        left: @menu-width;
+      left: @menu-width;
     }
 
     body.reading #hamburger {
