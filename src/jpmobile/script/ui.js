@@ -43,18 +43,22 @@ module.exports =
             },
 
             constitutesASwipe = function(pixelsMoved){
-              return pixelsMoved > 30
+              return pixelsMoved > 20
             },
 
             up = true,
 
             down = !up,
 
+            couldBeInABrowserUIEffect = function(){
+              return window.scrollY < 60;
+            },
+
             scrollMonitor = function(direction) {
               var progressing =
                 direction === up ?
                 function(y0,y1) { return y0 > y1; } :
-                function(y0,y1) { return y0 < y1; };
+                function(y0,y1) { return y0 < y1 && !(couldBeInABrowserUIEffect()) };
 
               return function(onScroll){
                 var prevY = window.scrollY,
@@ -160,22 +164,35 @@ module.exports =
 
             browsing = function(){
               var setIdle = function(){ processUIEvent("idle") },
-                seekMon = lookingDownMonitor(function(){
-                  processUIEvent("seeking text")
+                dribbleMon = lookingUpMonitor(function(){
+                  processUIEvent("seeking menu");
                 }),
-                idleTimeout = window.setTimeout(setIdle, 2500),
+                seekMon = lookingDownMonitor(function(){
+                  processUIEvent("seeking text");
+                }),
+                setIdleTimeout =
+                  function(){ return window.setTimeout(setIdle, 3000); };
+                idleTimeout = setIdleTimeout(),
+                disposeMonitors = function(){
+                  seekMon.dispose();
+                  dribbleMon.dispose();
+                },
                 self = {
                   transition : function(event){
                     switch(event) {
+                      case "seeking menu":
+                        window.clearTimeout(idleTimeout);
+                        idleTimeout = setIdleTimeout();
+                        return self;
                       case "user toggle":
-                        seekMon.dispose();
+                        disposeMonitors();
                         window.clearTimeout(idleTimeout);
                         return navigating();
                       case "idle" :
-                        seekMon.dispose();
+                        disposeMonitors();
                         return reading();
                       case "seeking text":
-                        seekMon.dispose();
+                        disposeMonitors();
                         window.clearTimeout(idleTimeout);
                         return reading();
                       default : return self;
