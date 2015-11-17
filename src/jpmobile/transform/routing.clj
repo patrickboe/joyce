@@ -23,6 +23,8 @@
 
 (def route-info (subdir-router "info"))
 
+(defn route-index [target] (str target "/index.html"))
+
 (defn image? [path]
   (case (extension path) ("jpg" "png" "gif" "jpeg") true false))
 

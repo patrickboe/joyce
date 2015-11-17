@@ -27,7 +27,7 @@ module.exports = function(grunt) {
       },
       cp: {
         tasks: ['copy'],
-        files: ['src/jpmobile/template/*']
+        files: ['src/jpmobile/template/*','src/jpmobile/img/*']
       },
       livereload: {
         options: { livereload: true },
@@ -40,6 +40,11 @@ module.exports = function(grunt) {
           {expand: true, cwd: 'src/jpmobile/template/', src: '**', dest: 'dist/', filter: 'isFile'}
         ],
       },
+      img: {
+        files: [
+          {expand: true, cwd: 'src/jpmobile/img/', src: '**', dest: 'dist/images/', filter: 'isFile'}
+        ],
+      }
     },
     cssmin: {
       dist: {
@@ -87,5 +92,5 @@ module.exports = function(grunt) {
 
   grunt.registerTask('dev', ['connect', 'watch']);
 
-  grunt.registerTask('default', ['less:prod', 'cssmin', 'browserify']);
+  grunt.registerTask('default', ['less:prod', 'cssmin', 'browserify', 'copy:img']);
 };

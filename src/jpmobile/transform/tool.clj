@@ -9,6 +9,7 @@
             [jpmobile.transform.note :as note]
             [jpmobile.transform.chapter :as chapter]
             [jpmobile.transform.info :as info]
+            [jpmobile.transform.splash :as splash]
             [jpmobile.transform.coding :as coding]
             [jpmobile.transform.data :as data]))
 
@@ -60,12 +61,17 @@
 (defn build-director [db master]
   (fn [dir from] (map (dir target db master) from)))
 
+(defn splash [route nav]
+  {:name (rt/route-index target)
+   :content (apply str (splash/render-splash route nav))})
+
 (defn migrate-text [hostname]
   (let [linkers (rt/linkers hostname)
         db (load-db)
         nav (nav/construct db linkers)
         master (partial master/joyce-page linkers nav)
         director (build-director db master)]
+    (files/write-out (splash linkers nav))
     (->> sourcedir
          calc-sources
          (map files/read-contents)
