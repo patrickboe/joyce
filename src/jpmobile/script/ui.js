@@ -27,8 +27,12 @@ module.exports =
       prepareContentPage = function(body){
         var nav = document.querySelector('nav'),
             main = document.querySelector('main'),
-            hamburger = body.insertBefore(make('<a id="hamburger"><span></span></a>'),nav),
+            controlMarkup = '<div id="controls"><a id="hamburger"><span></span></a><label for="pagination">Pages:</label><button id="pagination">Unpaginated</button></div>';
+            controls = body.insertBefore(make(controlMarkup),nav),
+            hamburger = controls.querySelector('#hamburger'),
+            pagination = controls.querySelector('#pagination'),
             hamburgerSpan = hamburger.querySelector('span'),
+            pageCitations = main.querySelectorAll('cite.page'),
 
             status = function(message){
               hamburgerSpan.innerHTML = message;
@@ -169,7 +173,7 @@ module.exports =
                   processUIEvent("seeking text");
                 }),
                 setIdleTimeout =
-                  function(){ return window.setTimeout(setIdle, 3000); };
+                  function(){ return window.setTimeout(setIdle, 6000); };
                 idleTimeout = setIdleTimeout(),
                 disposeMonitors = function(){
                   seekMon.dispose();
@@ -220,6 +224,44 @@ module.exports =
               return self;
             },
 
+            isEdition = function(ed) {
+              return function(node){
+                return node.title==ed;
+              };
+            },
+
+            onEditionClasses = function(classOp){
+              return function(ed){
+                var filter = Array.prototype.filter,
+                cs = filter.call(pageCitations,isEdition(ed)),
+                i = 0;
+                for(i=0;i<cs.length;i++)
+                  classOp(cs[i].classList);
+              }
+            },
+
+            unpaginateEdition = onEditionClasses(function(cl) { cl.remove("chosen"); }),
+
+            paginateEdition = onEditionClasses(function(cl) { cl.add("chosen"); }),
+
+            processPagination = function(ed) {
+              paginateEdition(ed);
+              pagination.innerHTML = ed;
+            };
+
+            cycleCitations = function(){
+              var states=["Unpaginated","1922 ed.","1932 ed.","1961 ed.","1986 ed."],
+                  i = parseInt(window.sessionStorage.getItem('paginationState')) || 0;
+              processPagination(states[i]);
+
+              return function(){
+                unpaginateEdition(states[i]);
+                i = (i + 1) % states.length;
+                window.sessionStorage.setItem('paginationState',i);
+                processPagination(states[i]);
+              };
+            }(),
+
             processUIEvent = (function(){
               var self = function(event){
                 userState = userState.transition(event);
@@ -235,6 +277,11 @@ module.exports =
         main.addEventListener('click', function(e) {
           processUIEvent("seeking text");
         });
+        pagination.addEventListener('click', function (e) {
+          e.preventDefault();
+          cycleCitations.apply(this);
+        });
+
       };
 
       life.ready(function(){

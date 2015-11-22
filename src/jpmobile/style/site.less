@@ -18,8 +18,6 @@ a.note.literature { color: #F59627; }
 a.note.ireland { color: #40B324; }
 a.note.performances { color: #AB59C2; }
 
-cite.page { display: none; }
-
 @menu-width: 180px;
 
 body.home {
@@ -240,6 +238,21 @@ small screens.
     span:after {
         margin-top: 0.6em;
     }
+}
+
+cite.page {
+  .page-content;
+  display: none;
+  text-align: right;
+  padding-bottom: 4em;
+}
+
+p cite.page {
+  padding-right: 0;
+}
+
+cite.page.chosen {
+ display: block;
 }
 
 #hamburger:hover,
