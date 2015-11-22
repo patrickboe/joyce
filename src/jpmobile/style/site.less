@@ -4,13 +4,11 @@
 @import "grids.less";
 
 @import url(https://fonts.googleapis.com/css?family=Roboto);
+@import url(https://fonts.googleapis.com/css?family=Merriweather);
 
-@bg-lite: #def0e0;
-@bg-strong: #a7d4bc;
-@bg-contrast-lite: #ffe6b7;
-@bg-contrast: #ce882d;
-
-body { font-family: 'Roboto', sans-serif; }
+@bg-contrast: #dfb784;
+@bg: #ffedc3;
+@bg-header: #ce882d;
 
 a.note { color: darkblue; }
 a.note.artist { color: #307EE3; }
@@ -24,27 +22,16 @@ cite.page { display: none; }
 
 @menu-width: 180px;
 
-nav {
-  .pure-menu
+body.home {
+  font-family: 'Merriweather', serif; 
+  background-color: @bg;
 
-  li { .pure-menu-item }
-
-  ul {
-    .pure-menu-list;
-    border-top: 1px solid #333;
+  nav {
+    font-size: 1.7em;
   }
 
-  header {
-    .pure-menu-heading;
-    font-size: 110%;
-    color: #fff;
-    margin: 0;
-    text-align: left;
-  }
-
-  a {
-    .pure-menu-link;
-    color: #555;
+  img {
+    display: block;
   }
 }
 
@@ -71,7 +58,7 @@ body {
     padding-left: 0;
 }
 
-body.navigating {
+body.content.navigating {
 
     nav {
         left: @menu-width;
@@ -83,7 +70,7 @@ body.navigating {
     }
 }
 
-.content {
+.page-content {
   max-width: 800px;
   padding: 0 30px;
   margin-left: auto;
@@ -91,7 +78,6 @@ body.navigating {
 }
 
 main {
-    margin-bottom: 50px;
     font-size: 1.1em;
 
     h1, h2 {
@@ -109,7 +95,7 @@ main {
     }
 
     h2 {
-        .content;
+        .page-content;
         color: #888;
         font-size: 1.5em;
     }
@@ -118,41 +104,44 @@ main {
       padding: 0;
 
       .pure-g;
-      .content;
+      .page-content;
 
       li { .pure-u-1-4; }
     }
 
     p {
       line-height: 1.6em;
-      .content;
+      .page-content;
     }
 
     div.pure-g {
-      .content;
+      .page-content;
     }
 }
-
 nav {
-    margin-left: -@menu-width;
-    width: @menu-width;
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    z-index: 1000; /* so the menu or its navicon stays above all content */
-    background: @bg-lite;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+    .pure-menu;
+    background: @bg;
 
-    ul {
-      background: transparent;
-      border: none;
+    li { .pure-menu-item }
+
+    header {
+      .pure-menu-heading;
+      font-size: 110%;
+      color: #fff;
+      margin: 0;
+      text-align: left;
     }
 
-    header, a {
+    a {
+      .pure-menu-link;
+      color: #555;
+    }
+
+    ul {
+      .pure-menu-list;
+      background: transparent;
+      border-top: 1px solid #333;
       border: none;
-      padding: 0.6em 0 0.6em 0.6em;
     }
 
     /*
@@ -160,7 +149,7 @@ nav {
     */
     li a:hover,
     li a:focus {
-        background: @bg-strong;
+        background: @bg-contrast;
     }
 
     /*
@@ -168,7 +157,7 @@ nav {
     */
     li.selected,
     header {
-        background: @bg-contrast;
+        background: @bg-header;
     }
 
     /*
@@ -178,7 +167,32 @@ nav {
         color: #fff;
     }
 
+    header, a {
+      border: none;
+      padding: 0.6em 0 0.6em 0.6em;
+    }
 }
+
+body.content {
+  font-family: 'Roboto', sans-serif;
+
+  main {
+    margin-bottom: 50px;
+  }
+
+  nav {
+      margin-left: -@menu-width;
+      width: @menu-width;
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      z-index: 1000; /* so the menu or its navicon stays above all content */
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+  }
+}
+
 
 /* -- Dynamic Button For Responsive Menu -------------------------------------*/
 
@@ -196,7 +210,7 @@ small screens.
     display: block; /* show this only on small screens */
     top: 0;
     left: 0; /* "#menu width" */
-    background: @bg-contrast;
+    background: @bg-header;
     font-size: 10px; /* change this value to increase/decrease button size */
     z-index: 10;
     width: 2em;
@@ -230,7 +244,7 @@ small screens.
 
 #hamburger:hover,
 #hamburger:focus {
-    background: @bg-contrast;
+    background: @bg-header;
 }
 
 
@@ -241,25 +255,69 @@ Hides the menu at `48em`
 */
 @media (min-width: 48em) {
 
-    body {
+    body.content {
         padding-left: @menu-width;
         left: 0;
+
+        nav {
+            left: @menu-width;
+        }
+
+        #hamburger {
+            display: none;
+        }
     }
 
-    nav {
-        left: @menu-width;
-    }
+    body.home {
+      img {
+        float: left;
+        border: 1em solid black;
+        margin-right: 1em;
+      }
 
-    #hamburger {
-        display: none;
+      nav {
+        line-height: 1.8em;
+
+        header {
+          background-color: transparent;
+          color: #000;
+        }
+
+        header, ul, a {
+          display: inline;
+        }
+
+        a {
+          padding-right: 0.6em;
+        }
+
+        li {
+          display: inline-block;
+        }
+
+        li:after {
+          content: "\2022";
+        }
+
+        li:last-child:after {
+          content: "";
+        }
+
+        li a:hover,
+        li a:focus {
+            background: inherit;
+            text-decoration: underline;
+            color: @bg-header;
+        }
+      }
     }
 }
 
 @media (max-width: 48em) {
     /* Only apply this when the window is small. Otherwise, the following
     case results in extra padding on the left:
-        * Make the window small.
         * Tap the menu to trigger the navigating state.
+        * Make the window small.
         * Make the window large again.
     */
     body.navigating {
@@ -270,4 +328,3 @@ Hides the menu at `48em`
       top: -5em;
     }
 }
-

@@ -4,7 +4,7 @@
       [net.cgrand.enlive-html :as en]))
 
 (en/deftemplate joyce-wrap "jpmobile/template/wrap.html"
-  [route title & body-content]
+  [route title body-tfm]
 
   [:title]
   (en/append (str " : " title))
@@ -16,4 +16,4 @@
   (ed/transform-attr :href (route :resource))
 
   [:body]
-  (apply en/content body-content))
+  body-tfm)

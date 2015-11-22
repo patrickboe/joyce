@@ -6,5 +6,8 @@
 
 (defn joyce-page [route nav title main]
   (wrap/joyce-wrap route title
-    nav
-    ((en/wrap "main") (cons {:tag :h1, :content title} main))))
+    (en/do->
+      (en/add-class "content")
+      (en/content
+        nav
+        ((en/wrap "main") (cons {:tag :h1 :content title} main))))))

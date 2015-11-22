@@ -22,12 +22,10 @@ module.exports =
           execute : function(){ called = true; },
           dispose : function() { window.clearInterval(iv); }
         };
-      };
+      },
 
-      life.ready(function(){
-
-        var body   = document.querySelector('body'),
-            nav = document.querySelector('nav'),
+      prepareContentPage = function(body){
+        var nav = document.querySelector('nav'),
             main = document.querySelector('main'),
             hamburger = body.insertBefore(make('<a id="hamburger"><span></span></a>'),nav),
             hamburgerSpan = hamburger.querySelector('span'),
@@ -237,6 +235,10 @@ module.exports =
         main.addEventListener('click', function(e) {
           processUIEvent("seeking text");
         });
-    });
+      };
 
+      life.ready(function(){
+        var body = document.querySelector('body.content');
+        if(body) prepareContentPage(body);
+      });
   };
