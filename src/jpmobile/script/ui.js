@@ -2,7 +2,8 @@ var life = require('./life'),
   dom = require('./dom'),
   lookMonitor = require('./lookMonitor'),
   navigation = require('./navigation'),
-  pagination = require('./pagination');
+  pagination = require('./pagination'),
+  coloration = require('./coloration');
 
 module.exports =
   function (document,window) {
@@ -11,7 +12,8 @@ module.exports =
         var nav = body.querySelector('nav'),
             main = body.querySelector('main'),
             controlMarkup = '<div id="controls"></div>',
-            controls = body.insertBefore(dom.make(controlMarkup),nav);
+            controls = body.insertBefore(dom.make(controlMarkup),nav),
+            form = controls.appendChild(dom.make('<form></form>'));
 
         navigation(body.classList,
                    window,
@@ -19,7 +21,9 @@ module.exports =
                    nav,
                    controls);
 
-        pagination(window,controls,main);
+        pagination(window,form,main);
+
+        coloration(form, main);
 
       };
 

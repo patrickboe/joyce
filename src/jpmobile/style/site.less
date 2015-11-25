@@ -11,14 +11,6 @@
 @bg-header: #ce882d;
 @bg-header-contrast: #a76717;
 
-a.note { color: darkblue; }
-a.note.artist { color: #307EE3; }
-a.note.bodily { color: #CF2929; }
-a.note.dublin { color: #9C632A; }
-a.note.literature { color: #F59627; }
-a.note.ireland { color: #40B324; }
-a.note.performances { color: #AB59C2; }
-
 @menu-width: 180px;
 
 body.home {
@@ -76,7 +68,22 @@ body.content.navigating {
   margin-right: auto;
 }
 
+main.colorful {
+  a.note { color: darkblue; }
+  a.note.artist { color: #307EE3; }
+  a.note.bodily { color: #CF2929; }
+  a.note.dublin { color: #9C632A; }
+  a.note.literature { color: #F59627; }
+  a.note.ireland { color: #40B324; }
+  a.note.performances { color: #AB59C2; }
+}
+
 main {
+    a.note {
+      color: inherit;
+      text-decoration: none;
+    }
+
     font-size: 1.1em;
 
     h1, h2 {
@@ -85,11 +92,11 @@ main {
 
     h1 {
         color: #333;
-        padding: 0.8em 0 0.5em;
+        padding: 1.5em 0 0.5em;
         margin: 0;
         text-align: center;
         border-bottom: 1px solid #eee;
-        margin: 0.2em 0 1em;
+        margin: 0 0 1em;
         font-size: 2.2em;
     }
 
@@ -215,7 +222,7 @@ body.content {
       background: @bg-header;
     }
 
-    #pagination-form {
+    form {
       display: block;
       float: right;
 
@@ -224,8 +231,7 @@ body.content {
       }
 
       label {
-        padding: 1em 0.5em;
-        height: 1em;
+        display:none;
       }
 
       button:active {
@@ -235,7 +241,7 @@ body.content {
 
       button {
         height: 3em;
-        width: 7em;
+        width: 6em;
         color: white;
         border-radius: 0.2em;
         border: 0.2em outset @bg-header;

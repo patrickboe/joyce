@@ -1,11 +1,10 @@
 var dom = require('./dom');
 
-module.exports = function(window,controls,main){
-  var paginationForm = controls.appendChild(dom.make('<form id="pagination-form"></form>')),
-      states=["Unmarked","1922 ed.","1932 ed.","1961 ed.","1986 ed."],
+module.exports = function(window,form,main){
+  var states=["Unpaged","1922 ed.","1932 ed.","1961 ed.","1986 ed."],
       stateIndex = parseInt(window.sessionStorage.getItem('paginationState')) || 0;
-      label = paginationForm.appendChild(dom.make('<label for="pagination">Pages:</label>')),
-      pageButton = paginationForm.appendChild(dom.make('<button id="pagination"></button>')),
+      label = form.appendChild(dom.make('<label for="pagination">Pages:</label>')),
+      pageButton = form.appendChild(dom.make('<button id="pagination"></button>')),
       pageCitations = main.querySelectorAll('cite.page'),
 
       isEdition = function(ed) {
