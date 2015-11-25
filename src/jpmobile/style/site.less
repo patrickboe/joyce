@@ -9,6 +9,7 @@
 @bg-contrast: #dfb784;
 @bg: #ffedc3;
 @bg-header: #ce882d;
+@bg-header-contrast: #a76717;
 
 a.note { color: darkblue; }
 a.note.artist { color: #307EE3; }
@@ -43,7 +44,7 @@ Add transition to containers so they can push in and out.
 */
 body,
 nav,
-#hamburger {
+#controls {
     -webkit-transition: all 0.2s ease-out;
     -moz-transition: all 0.2s ease-out;
     -ms-transition: all 0.2s ease-out;
@@ -63,7 +64,7 @@ body.content.navigating {
         width: @menu-width;
     }
 
-    #hamburger {
+    #controls {
         left: @menu-width;
     }
 }
@@ -119,12 +120,12 @@ main {
 nav {
     .pure-menu;
     background: @bg;
+    font-size: 17px;
 
     li { .pure-menu-item }
 
     header {
       .pure-menu-heading;
-      font-size: 110%;
       color: #fff;
       margin: 0;
       text-align: left;
@@ -191,52 +192,83 @@ body.content {
   }
 }
 
+#controls > * {
+  vertical-align: middle;
+}
 
-/* -- Dynamic Button For Responsive Menu -------------------------------------*/
-
-/*
-The button to open/close the Menu is custom-made and not part of Pure. Here's
-how it works:
-*/
-
-/*
-`#hamburger` represents the responsive menu toggle that shows/hides on
-small screens.
-*/
-#hamburger {
+#controls {
     position: fixed;
-    display: block; /* show this only on small screens */
     top: 0;
     left: 0; /* "#menu width" */
-    background: @bg-header;
-    font-size: 10px; /* change this value to increase/decrease button size */
+    background: white;
     z-index: 10;
-    width: 2em;
-    height: auto;
-    padding: 2em 1.6em;
+    width: 100%;
+    font-size: 10px; /* change this value to increase/decrease button size */
 
-    span {
-        position: relative;
-        display: block;
+    label, #hamburger, button {
+      font-weight: bold;
+      float: left;
     }
 
-    span,
-    span:before,
-    span:after {
-        background-color: #fff;
-        width: 100%;
-        height: 0.2em;
+    #hamburger, button {
+      color: #fff;
+      background: @bg-header;
     }
 
-    span:before,
-    span:after {
-        position: absolute;
-        margin-top: -0.6em;
-        content: " ";
+    #pagination-form {
+      display: block;
+      float: right;
+
+      label, button {
+        font-size: 1.4em;
+      }
+
+      label {
+        padding: 1em 0.5em;
+        height: 1em;
+      }
+
+      button:active {
+        border-style: inset;
+        background-color: @bg-header-contrast;
+      }
+
+      button {
+        height: 3em;
+        width: 7em;
+        color: white;
+        border-radius: 0.2em;
+        border: 0.2em outset @bg-header;
+      }
     }
 
-    span:after {
-        margin-top: 0.6em;
+    #hamburger {
+        width: 2em;
+        padding: 2em 1.6em;
+
+        span {
+            position: relative;
+            display: block;
+        }
+
+        span,
+        span:before,
+        span:after {
+            background-color: #fff;
+            width: 100%;
+            height: 0.2em;
+        }
+
+        span:before,
+        span:after {
+            position: absolute;
+            margin-top: -0.6em;
+            content: " ";
+        }
+
+        span:after {
+            margin-top: 0.6em;
+        }
     }
 }
 
@@ -255,12 +287,6 @@ cite.page.chosen {
  display: block;
 }
 
-#hamburger:hover,
-#hamburger:focus {
-    background: @bg-header;
-}
-
-
 /* -- Responsive Styles (Media Queries) ------------------------------------- */
 
 /*
@@ -273,12 +299,15 @@ Hides the menu at `48em`
         left: 0;
 
         nav {
-            left: @menu-width;
+          left: @menu-width;
         }
 
-        #hamburger {
-            display: none;
-        }
+        #controls {
+          background: transparent;
+          #hamburger {
+              display: none;
+          }
+      }
     }
 
     body.home {
@@ -337,7 +366,7 @@ Hides the menu at `48em`
       left: @menu-width;
     }
 
-    body.reading #hamburger {
+    body.reading #controls {
       top: -5em;
     }
 }

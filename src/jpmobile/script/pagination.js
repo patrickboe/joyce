@@ -1,8 +1,11 @@
 var dom = require('./dom');
 
 module.exports = function(window,controls,main){
-  var label = controls.appendChild(dom.make('<label for="pagination">Pages:</label>')),
-      pageButton = controls.appendChild(dom.make('<button id="pagination">Unpaginated</button>')),
+  var paginationForm = controls.appendChild(dom.make('<form id="pagination-form"></form>')),
+      states=["Unmarked","1922 ed.","1932 ed.","1961 ed.","1986 ed."],
+      stateIndex = parseInt(window.sessionStorage.getItem('paginationState')) || 0;
+      label = paginationForm.appendChild(dom.make('<label for="pagination">Pages:</label>')),
+      pageButton = paginationForm.appendChild(dom.make('<button id="pagination"></button>')),
       pageCitations = main.querySelectorAll('cite.page'),
 
       isEdition = function(ed) {
@@ -31,15 +34,13 @@ module.exports = function(window,controls,main){
       };
 
       cycleCitations = function(){
-        var states=["Unpaginated","1922 ed.","1932 ed.","1961 ed.","1986 ed."],
-            i = parseInt(window.sessionStorage.getItem('paginationState')) || 0;
-        processPagination(states[i]);
+        processPagination(states[stateIndex]);
 
         return function(){
-          unpaginateEdition(states[i]);
-          i = (i + 1) % states.length;
-          window.sessionStorage.setItem('paginationState',i);
-          processPagination(states[i]);
+          unpaginateEdition(states[stateIndex]);
+          stateIndex = (stateIndex + 1) % states.length;
+          window.sessionStorage.setItem('paginationState',stateIndex);
+          processPagination(states[stateIndex]);
         };
       }();
 

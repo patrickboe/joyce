@@ -102,6 +102,10 @@ module.exports = function(uiClasses,timers,looking,nav,controls) {
     processMenuEvent("seeking text");
   });
 
+  controls.addEventListener('click', function (e) {
+    processMenuEvent("seeking menu");
+  });
+
 };
 
 
