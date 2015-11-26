@@ -19,7 +19,8 @@ module.exports =
                    window,
                    lookMonitor(window,main),
                    nav,
-                   controls);
+                   controls,
+                   main);
 
         pagination(window,form,main);
 

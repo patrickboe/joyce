@@ -1,6 +1,6 @@
 var dom = require('./dom');
 
-module.exports = function(uiClasses,timers,looking,nav,controls) {
+module.exports = function(uiClasses,timers,looking,nav,controls,main) {
       var hamburger =
         controls.appendChild(dom.make('<a id="hamburger"><span></span></a>')),
       hamburgerSpan = hamburger.querySelector('span'),
@@ -98,7 +98,7 @@ module.exports = function(uiClasses,timers,looking,nav,controls) {
       processMenuEvent("user toggle");
   });
 
-  nav.addEventListener('blur', function(e) {
+  main.addEventListener('click', function(e) {
     processMenuEvent("seeking text");
   });
 
