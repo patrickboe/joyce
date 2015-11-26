@@ -1,11 +1,8 @@
 (ns jpmobile.transform.info
-  (:use clojure.tools.trace)
   (:require [jpmobile.transform.edits :as edits]
             [net.cgrand.enlive-html :as en]))
 
 (defn is-tag? [t] (fn [n] (= t (:tag n))))
-
-(en/deftemplate info-page "jpmobile/template/sample.html" [node])
 
 (def simple-tfm
   (en/transformation [:h2] nil))
@@ -102,7 +99,7 @@
         [intro [_ _ & navs]] (split-with nonempty-node? paragraphs)]
     [
      ((en/transformation [:section] (en/content intro)) section)
-     {:tag :nav, :attrs { :class "eras" }, :content (p->nav navs)}]))
+     (en/as-nodes {:tag :nav, :attrs { :class "eras" }, :content (p->nav navs)})]))
 
 (defn canon? [n]
   (not (or (citation-header? n) (empty-node? n))) )
@@ -162,7 +159,7 @@
         biblio (transform-bibliography (last body-parts))
         eras (mapcat transform-era (partition 2 (butlast body-parts)))
         [clean-intro nav] (extract-nav (transform-intro intro))]
-    [(simple-tfm title) clean-intro nav eras biblio]))
+    (concat (simple-tfm title) clean-intro nav eras biblio)))
 
 (defn info-rewriter [tfm]
   (fn [host db doc]
