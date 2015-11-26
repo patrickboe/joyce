@@ -6,10 +6,19 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto);
 @import url(https://fonts.googleapis.com/css?family=Merriweather);
 
-@bg-contrast: #dfb784;
+@bg-contrast: #60b78f;
 @bg: #ffedc3;
 @bg-header: #ce882d;
 @bg-header-contrast: #a76717;
+
+@link-color: #555;
+
+@artist-color: #307EE3;
+@bodily-color: #CF2929;
+@dublin-color: #9C632A;
+@literature-color: #F59627;
+@ireland-color: #40B324;
+@performances-color: #AB59C2;
 
 @menu-width: 180px;
 
@@ -70,12 +79,12 @@ body.content.navigating {
 
 main.colorful {
   a.note { color: darkblue; }
-  a.note.artist { color: #307EE3; }
-  a.note.bodily { color: #CF2929; }
-  a.note.dublin { color: #9C632A; }
-  a.note.literature { color: #F59627; }
-  a.note.ireland { color: #40B324; }
-  a.note.performances { color: #AB59C2; }
+  a.note.artist { color: @artist-color; }
+  a.note.bodily { color: @bodily-color; }
+  a.note.dublin { color: @dublin-color; }
+  a.note.literature { color: @literature-color; }
+  a.note.ireland { color: @ireland-color; }
+  a.note.performances { color: @performances-color; }
 }
 
 main {
@@ -140,7 +149,7 @@ nav {
 
     a {
       .pure-menu-link;
-      color: #555;
+      color: @link-color;
     }
 
     ul {
@@ -207,7 +216,7 @@ body.content {
     position: fixed;
     top: 0;
     left: 0; /* "#menu width" */
-    background: white;
+    background: transparent;
     z-index: 10;
     width: 100%;
     font-size: 10px; /* change this value to increase/decrease button size */
@@ -217,7 +226,7 @@ body.content {
       float: left;
     }
 
-    #hamburger, button {
+    #hamburger {
       color: #fff;
       background: @bg-header;
     }
@@ -236,15 +245,29 @@ body.content {
 
       button:active {
         border-style: inset;
-        background-color: @bg-header-contrast;
+        background-color: @bg;
       }
 
       button {
-        height: 3em;
-        width: 6em;
-        color: white;
+        margin: 0.2em 0.4em 0 0;
+        height: 2.7em;
+        width: 7em;
+        color: link-color;
         border-radius: 0.2em;
-        border: 0.2em outset @bg-header;
+        box-shadow: .2em .2em .2em @link-color, 0 0 .2em @link-color;
+        border: none;
+        background: white;
+      }
+
+      button#coloration {
+        width: 5em;
+
+        .artist { color: @artist-color; }
+        .bodily { color: @bodily-color; }
+        .dublin { color: @dublin-color; }
+        .literature { color: @literature-color; }
+        .ireland { color: @ireland-color; }
+        .performances { color: @performances-color; }
       }
     }
 
