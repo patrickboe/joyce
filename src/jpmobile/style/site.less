@@ -9,9 +9,8 @@
 @bg-contrast: #60b78f;
 @bg: #ffedc3;
 @bg-header: #ce882d;
-@bg-header-contrast: #a76717;
 
-@link-color: #555;
+@color-header: #7f4800;
 
 @artist-color: #307EE3;
 @bodily-color: #CF2929;
@@ -149,7 +148,7 @@ nav {
 
     a {
       .pure-menu-link;
-      color: @link-color;
+      color: #555;
     }
 
     ul {
@@ -244,17 +243,17 @@ body.content {
       }
 
       button:active {
-        border-style: inset;
-        background-color: @bg;
+        border: 0.1em solid #888;
+        box-shadow: none;
       }
 
       button {
+        color: @color-header;
         margin: 0.2em 0.4em 0 0;
         height: 2.7em;
         width: 7em;
-        color: link-color;
         border-radius: 0.2em;
-        box-shadow: .2em .2em .2em @link-color, 0 0 .2em @link-color;
+        box-shadow: .2em .2em .2em #aaa, 0 0 .2em #aaa;
         border: none;
         background: white;
       }
