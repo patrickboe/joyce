@@ -48,7 +48,7 @@
                   (remove-classes ["box-images" "box-images-med" "box-images-short" "box-media"]))
 
             [:p]
-            (en/remove-class "newchapter")
+            (en/do-> (en/remove-attr :style) (en/remove-class "newchapter"))
 
             [[:span (en/attr? :id)]]
             cite-page)]

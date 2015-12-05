@@ -124,15 +124,86 @@ main {
       li { .pure-u-1-4; }
     }
 
-    p {
+    p, dd {
       line-height: 1.6em;
       .page-content;
+    }
+
+    p.lyrics {
+      overflow-x: auto;
+      text-align: justify;
+      padding-left: 60px;
+      white-space: nowrap;
     }
 
     div.pure-g {
       .page-content;
     }
+
+    dt {
+      .page-content;
+      font-weight: bold;
+      padding-top: 1em;
+      padding-bottom: .5em;
+    }
+
+    dl.key {
+      padding: 0;
+      overflow: hidden;
+      .page-content;
+
+      dd,dt {
+        padding: 0.5em 0;
+      }
+
+      dt {
+        margin: 0;
+        float: left;
+        clear: left;
+        width: 1em;
+        text-align: right;
+      }
+
+      dd {
+        line-height: inherit;
+        margin: 0 0 0 1.5em;
+      }
+    }
+
+    header.author {
+      .page-content;
+      text-align: right;
+    }
+
+    cite {
+      .page-content;
+      display: block;
+      padding-top: .5em;
+      padding-bottom: .5em;
+
+      em {
+        font-weight: bold;
+        padding-right: .5em;
+        padding-left: .5em;
+      }
+    }
+
+    cite.page {
+      display: none;
+      text-align: right;
+      padding-top: 1em;
+      padding-bottom: 3em;
+    }
+
+    p cite.page {
+     padding-right: 0;
+    }
+
+    cite.page.chosen {
+     display: block;
+    }
 }
+
 nav {
     .pure-menu;
     background: @bg;
@@ -299,28 +370,6 @@ body.content {
             margin-top: 0.6em;
         }
     }
-}
-
-cite.page {
-  .page-content;
-  .break-after;
-  display: none;
-  text-align: right;
-  padding-top: 1em;
-  padding-bottom: 2em;
-  margin-bottom: 2em;
-}
-
-cite.page:after {
-  content: hr
-}
-
-p cite.page {
-  padding-right: 0;
-}
-
-cite.page.chosen {
- display: block;
 }
 
 /* -- Responsive Styles (Media Queries) ------------------------------------- */

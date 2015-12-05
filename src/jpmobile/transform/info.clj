@@ -66,7 +66,7 @@
 (def tfm-people
     (en/transformation
 
-      [:a] (en/do->
+      [:a.gloss] (en/do->
              (en/remove-attr :target)
              (en/add-class "intro"))
 
@@ -86,6 +86,8 @@
 
       [:p.biblio]
         (en/do->
+          (en/transform-content
+            (en/transformation [:i] (edits/change-tag :em)))
           (en/remove-class "biblio")
           (edits/change-tag :cite))))
 
@@ -97,8 +99,7 @@
 (defn extract-nav [section]
   (let [paragraphs (en/select section [:p])
         [intro [_ _ & navs]] (split-with nonempty-node? paragraphs)]
-    [
-     ((en/transformation [:section] (en/content intro)) section)
+    [((en/transformation [:section] (en/content intro)) section)
      (en/as-nodes {:tag :nav, :attrs { :class "eras" }, :content (p->nav navs)})]))
 
 (defn canon? [n]
