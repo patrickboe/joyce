@@ -93,6 +93,15 @@ main {
       text-decoration: none;
     }
 
+    table {
+      .page-content;
+      font-size: 0.8em;
+      overflow-x: auto;
+      td {
+        padding: 0.2em;
+      }
+    }
+
     font-size: 1.1em;
 
     h1, h2 {
@@ -170,8 +179,13 @@ main {
       }
     }
 
-    header.author {
+    figure {
       .page-content;
+    }
+
+    header.author, span.byline {
+      .page-content;
+      display: block;
       text-align: right;
     }
 
