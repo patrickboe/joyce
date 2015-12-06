@@ -17,6 +17,7 @@
 @performances-color: #AB59C2;
 
 @menu-width: 180px;
+@content-padding: 1em;
 
 body.home {
   font-family: 'Merriweather', serif; 
@@ -68,7 +69,7 @@ body.content.navigating {
 
 .page-content {
   max-width: 800px;
-  padding: 0 30px;
+  padding: 0 @content-padding;
   margin-left: auto;
   margin-right: auto;
 }
@@ -102,7 +103,7 @@ main {
       }
     }
 
-    font-size: 1.1em;
+    font-size: 1em;
 
     h1, h2 {
         font-weight: 400;
@@ -134,14 +135,14 @@ main {
     }
 
     p, dd {
-      line-height: 1.6em;
+      line-height: 1.65em;
       .page-content;
     }
 
     p.lyrics {
       overflow-x: auto;
       text-align: justify;
-      padding-left: 60px;
+      padding-left: (@content-padding * 2);
       white-space: nowrap;
     }
 
