@@ -1,22 +1,18 @@
 #project-specific
-dist/
 orig/
 joyce.har
 pagespeed.log
+.joycerc
 
 #clojure
 pom.xml
 pom.xml.asc
 *jar
-/lib/
 /classes/
 /target/
-/stage/
 /checkouts/
 .lein-deps-sum
 .lein-repl-history
 .lein-plugins/
 .lein-failures
 .nrepl-port
-
-.joycerc

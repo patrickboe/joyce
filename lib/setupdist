@@ -1,0 +1,9 @@
+if [ -f .joycerc ]; then
+  source .joycerc
+fi
+
+source lib/check_prereqs
+
+DIST_DIR="${PWD}/target/dist"
+mkdir -p target
+rm -rf target/dist 2> /dev/null
