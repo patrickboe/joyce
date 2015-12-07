@@ -90,7 +90,7 @@ module.exports = function(grunt) {
 
   require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
 
-  grunt.registerTask('dev', ['connect', 'watch']);
+  grunt.registerTask('dev', ['less:dev', 'browserify', 'copy', 'connect', 'watch']);
 
   grunt.registerTask('default', ['less:prod', 'cssmin', 'browserify', 'copy:img']);
 };

@@ -72,12 +72,14 @@
 
 (def source-js #(str % "/swap/"))
 
-(defn make-protocol-relative [host]
-  (fn [url] (str "//" host "/" url)))
+(defn root-relative [url] (str "/" url))
 
-(defn rewrite-for [host dir]
+(defn root-relative-from-subdir [subdir]
+  (fn [url] (str "/" subdir "/" url)))
+
+(defn rewrite-for [dir]
   (comp
-    (make-protocol-relative host)
+    root-relative
     (fn [url]
       (case (extension url)
         "htm" (str dir url "l")
@@ -86,14 +88,14 @@
 
 (defrecord Linker [link-chapter rewrite-url])
 
-(defn linkers [host]
+(defn linkers []
   (let [linker-from
         (fn [subdir]
-          (comp (make-protocol-relative (str host "/" subdir))
+          (comp (root-relative-from-subdir subdir)
                 #(str % ".html"))) ]
 
     { :chapter->url (linker-from "chapters")
       :info->url (linker-from "info")
-      :resource (make-protocol-relative host)
-      :rewrite-from-chapter (rewrite-for host "")
-      :rewrite-from-note (rewrite-for host "notes/") }))
+      :resource root-relative
+      :rewrite-from-chapter (rewrite-for "")
+      :rewrite-from-note (rewrite-for "notes/") }))
