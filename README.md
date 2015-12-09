@@ -7,7 +7,7 @@ You Need:
 - Java
 - nodejs & npm
 - ImageMagick (mogrify)
-- Python (required for Turbolift)
+- Python 2.7.9 or above (required for Turbolift)
 - [Turbolift](https://github.com/cloudnull/turbolift/archive/v2.1.3.zip)
   (install this by unzipping to a directory and running `python setup.py install`)
 
@@ -53,4 +53,4 @@ Commands:
 - `./dev.sh`: build the site from source, put a development version of it in the
 `dist` directory, and host it in a livereload session on a lightweight webserver
 - `./package.sh`: build and zip the files necessary to use the tool on a non-dev machine (produces a tarball in the target/ directory)
-- `lein test`: run Selenium benchmarks on the staging location:
+- `lein test`: run Selenium benchmarks on the staging location
