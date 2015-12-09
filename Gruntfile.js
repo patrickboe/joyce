@@ -22,7 +22,7 @@ module.exports = function(grunt) {
         files: ['src/jpmobile/style/*.less']
       },
       js: {
-        tasks: ['browserify'],
+        tasks: ['browserify:dev'],
         files: ['src/jpmobile/script/*.js']
       },
       cp: {
@@ -66,9 +66,21 @@ module.exports = function(grunt) {
       }
     },
     browserify: {
-      dist: {
+      prod: {
+        files: {
+          'target/dist-stage/script/site.js': ['src/jpmobile/script/site.js']
+        }
+      },
+      dev: {
         files: {
           'target/dist/script/site.js': ['src/jpmobile/script/site.js']
+        }
+      }
+    },
+    uglify: {
+      dist: {
+        files: {
+          'target/dist/script/site.js' : ['target/dist-stage/script/site.js']
         }
       }
     },
@@ -90,7 +102,7 @@ module.exports = function(grunt) {
 
   require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
 
-  grunt.registerTask('dev', ['less:dev', 'browserify', 'copy', 'connect', 'watch']);
+  grunt.registerTask('dev', ['less:dev', 'browserify:dev', 'copy', 'connect', 'watch']);
 
-  grunt.registerTask('default', ['less:prod', 'cssmin', 'browserify', 'copy:img']);
+  grunt.registerTask('default', ['less:prod', 'browserify:prod', 'cssmin', 'uglify', 'copy:img']);
 };
