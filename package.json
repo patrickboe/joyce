@@ -1,6 +1,6 @@
 {
   "name": "joyce",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "a mobile friendly ulysses",
   "main": "index.js",
   "scripts": {
