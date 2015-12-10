@@ -5,7 +5,8 @@ module.exports = function(grunt) {
     return "/" + path.split("/").slice(1).join("/");
   },
   oneHourInMs =1000 * 60 * 60,
-  paths = shell.ls(["target/dist/chapters/*.html","target/dist/notes/*.html","target/dist/info/*.html"]).map(webpath);
+  paths = shell.test('-d','target/dist/chapters') &&
+    shell.ls(["target/dist/chapters/*.html","target/dist/notes/*.html","target/dist/info/*.html"]).map(webpath);
 
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
@@ -52,6 +53,9 @@ module.exports = function(grunt) {
           'target/dist/style/site.css' : ['target/dist-stage/style/site.css']
         }
       }
+    },
+    version: {
+      default: { src: ['package.json'] }
     },
     less: {
       prod: {
@@ -101,6 +105,8 @@ module.exports = function(grunt) {
   });
 
   require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
+
+  grunt.loadNpmTasks('grunt-version');
 
   grunt.registerTask('dev', ['less:dev', 'browserify:dev', 'copy', 'connect', 'watch']);
 

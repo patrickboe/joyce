@@ -11,6 +11,8 @@
                   ["change" "version"
                    "leiningen.release/bump-version" "release"]
                   ["uberjar"]
+                  ["vcs" "commit"]
+                  ["vcs" "tag"]
                   ["change" "version" "leiningen.release/bump-version"]]
   :dependencies [[org.clojure/clojure "1.5.1"]
                  [commons-io/commons-io "2.4"]
