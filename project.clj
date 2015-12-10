@@ -1,9 +1,17 @@
 (defproject jpmobile "0.1.0-SNAPSHOT"
   :description "joyceproject.com responsive html redesign"
   :min-lein-version "2.0.0"
+  :license {:name "GNU General Public License - Version 3"
+            :url "http://www.eclipse.org/legal/epl-v10.html"}
+  :url "https://github.com/patrickboe/joyce"
   :plugins [[cider/cider-nrepl "0.9.1"]]
   :main jpmobile.transform.tool
   :aot [jpmobile.transform.tool]
+  :release-tasks [["vcs" "assert-committed"]
+                  ["change" "version"
+                   "leiningen.release/bump-version" "release"]
+                  ["uberjar"]
+                  ["change" "version" "leiningen.release/bump-version"]]
   :dependencies [[org.clojure/clojure "1.5.1"]
                  [commons-io/commons-io "2.4"]
                  [org.slf4j/slf4j-simple "1.7.12"]
