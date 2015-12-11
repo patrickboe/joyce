@@ -11,7 +11,15 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     connect: {
-      server: {
+      simulation: {
+        options: {
+          keepalive: true,
+          base: [
+            { path: 'target/dist', options: { maxAge: oneHourInMs } }
+          ]
+        }
+      },
+      dev: {
         options: {
           base: { path: 'target/dist', options: { maxAge: 0 } }
         }
@@ -106,9 +114,9 @@ module.exports = function(grunt) {
 
   require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
 
-  grunt.loadNpmTasks('grunt-version');
+  grunt.registerTask('run', ['default', 'connect:simulation']);
 
-  grunt.registerTask('dev', ['less:dev', 'browserify:dev', 'copy', 'connect', 'watch']);
+  grunt.registerTask('dev', ['less:dev', 'browserify:dev', 'copy', 'connect:dev', 'watch']);
 
   grunt.registerTask('default', ['less:prod', 'browserify:prod', 'cssmin', 'uglify', 'copy:img']);
 };

@@ -10,14 +10,14 @@
             [clojure.java.io :refer [file]]
             [clj-webdriver.taxi :refer :all]))
 
-(def test-host "05093a3aa61c2575bf27-bce33873b3e004c2e98272b24eb2f01a.r94.cf5.rackcdn.com")
+(def test-host "localhost:8000")
 
 (defn html-in [dir]
   (filter #(.endsWith % ".html") (map #(.getPath %) (file-seq (file dir)))))
 
-(defn webpath [filepath] (str "http://" test-host "/" (join "/" (drop 1 (split filepath #"/")))))
+(defn webpath [filepath] (str "http://" test-host "/" (join "/" (drop 2 (split filepath #"/")))))
 
-(def pages (map webpath (mapcat html-in ["dist/chapters" "dist/notes" "dist/info"])))
+(def pages (map webpath (mapcat html-in ["target/dist/chapters" "target/dist/notes" "target/dist/info"])))
 
 (defn proxied-chrome-driver [bm-proxy]
   (let [prox (ClientUtil/createSeleniumProxy bm-proxy)
@@ -56,8 +56,9 @@
 (defn pages-should-have-loaded-quickly [bmproxy]
   (let [load-time-90th-percentile (at-percentile 90 second (read-load-times bmproxy))
       threshold (long (Math/ceil (* 1.1 unstyled-site-90th-percentile-load-time)))]
+  (println (str "90th percentile full page load time is " load-time-90th-percentile " milliseconds."))
   (is (< (second load-time-90th-percentile) threshold)
-      (str "Load time threshold for 90th percentile page exceeded at " load-time-90th-percentile))))
+      (str "Load time threshold of " threshold " ms for 90th percentile page exceeded."))))
 
 (deftest ^:acceptance collect-full-har
   (let [bmproxy (make-3G-network-simulator)]

@@ -54,4 +54,4 @@ Commands:
 - `./dev.sh`: build the site from source, put a development version of it in the
 `dist` directory, and host it in a livereload session on a lightweight webserver
 - `./release.sh`: build and zip the files necessary to use the tool on a non-dev machine (produces a tarball in the target/ directory), bump the patch number of the version and tag the release
-- `lein test`: run Selenium benchmarks on the staging location
+- `./bench.sh`: run a simulation version on the site locally and conduct benchmarks on it
