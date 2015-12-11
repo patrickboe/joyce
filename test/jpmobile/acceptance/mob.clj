@@ -43,7 +43,7 @@
 
 (def rates {:3G {:down-Bps 100000 :up-Bps 50000 :latency-ms 100}})
 
-(def unstyled-site-90th-percentile-load-time 1881)
+(def best-known-90th-percentile-load-time 1554)
 
 (defn make-3G-network-simulator []
   (let [rate (rates :3G)]
@@ -55,10 +55,11 @@
 
 (defn pages-should-have-loaded-quickly [bmproxy]
   (let [load-time-90th-percentile (at-percentile 90 second (read-load-times bmproxy))
-      threshold (long (Math/ceil (* 1.1 unstyled-site-90th-percentile-load-time)))]
-  (println (str "90th percentile full page load time is " load-time-90th-percentile " milliseconds."))
-  (is (< (second load-time-90th-percentile) threshold)
-      (str "Load time threshold of " threshold " ms for 90th percentile page exceeded."))))
+        time-portion (second load-time-90th-percentile)
+        threshold (long (Math/ceil (* 1.1 best-known-90th-percentile-load-time)))]
+  (println (str "90th percentile full page load time is " time-portion " milliseconds."))
+  (is (< time-portion threshold)
+      (str "Load time threshold of " threshold " ms for 90th percentile page exceeded at " load-time-90th-percentile ))))
 
 (deftest ^:acceptance collect-full-har
   (let [bmproxy (make-3G-network-simulator)]
