@@ -1,3 +1,5 @@
+echo "Cleaning target"
+
 if [ -f .joycerc ]; then
   source .joycerc
 fi
