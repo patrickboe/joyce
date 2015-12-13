@@ -20,14 +20,16 @@ To Install:
    - `RACKSPACE_API_KEY` : Your API key for the rackspace account you
      use to host the site
    - `RACKSPACE_USER` : Your rackspace username
-   - `RACKSPACE_STAGING_CONTAINER` : The name of the rackspace container
-     to send the site to
+   - `RACKSPACE_CONTAINER` : The name of the rackspace container to send
+     the site to
    - `JOYCE_PROJECT_SOURCE` : The full path to the directory containing
      the source to the standard version of the joyceproject.com site
 
 Commands:
 ---------
-- `./stage.sh`: generate and stage site
+- `./stage.sh`: generate and stage site locally
+- `./deploy.sh`: generate and deploy site to a rackspace cloud files
+  location
 
 Developing the Conversion Tool
 ==============================
