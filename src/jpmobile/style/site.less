@@ -51,6 +51,25 @@ body.home {
   }
 }
 
+/* a way to hide an element only on non-screenreaders */
+.obscure {
+  position:absolute;
+  left:-10000px;
+  top:auto;
+  width:1px;
+  height:1px;
+  overflow:hidden;
+}
+
+.shown {
+  position: static;
+  left: inherit;
+  top: inherit;
+  overflow: inherit;
+  width: inherit;
+  height: inherit;
+}
+
 img {
     max-width: 100%;
     height: auto;
@@ -108,6 +127,31 @@ main.colorful {
 }
 
 main {
+    section.brief h2 { .obscure; }
+
+    section.read-more {
+      h2 {
+        -webkit-user-select: none; /* webkit (safari, chrome) browsers */
+        -moz-user-select: none; /* mozilla browsers */
+        -khtml-user-select: none; /* webkit (konqueror) browsers */
+        -ms-user-select: none; /* IE10+ */
+        cursor: pointer;
+
+        .twisty {
+          vertical-align: -.3em;
+          font-size: 1.5em;
+        }
+      }
+      p { .obscure; }
+    }
+
+    section.read-more.open {
+      p {
+        .shown;
+        .page-content;
+      }
+    }
+
     a.note {
       color: inherit;
       text-decoration: none;
@@ -207,6 +251,7 @@ main {
       .page-content;
       display: block;
       text-align: right;
+      clear: both;
     }
 
     cite {
@@ -222,19 +267,18 @@ main {
       }
     }
 
-    cite.page {
-      display: none;
-      text-align: right;
-      padding-top: 1em;
-      padding-bottom: 3em;
-    }
+    cite.page { .obscure; }
 
-    p cite.page {
+    p cite.page.chosen {
      padding-right: 0;
     }
 
     cite.page.chosen {
-     display: block;
+      .shown;
+      .page-content;
+      text-align: right;
+      padding-top: 1em;
+      padding-bottom: 3em;
     }
 }
 
@@ -345,7 +389,7 @@ body.content {
       }
 
       label {
-        display:none;
+        .obscure;
       }
 
       button:active {

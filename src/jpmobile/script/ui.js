@@ -20,6 +20,7 @@ var life = require('./life'),
   dom = require('./dom'),
   lookMonitor = require('./lookMonitor'),
   navigation = require('./navigation'),
+  details = require('./details'),
   pagination = require('./pagination'),
   coloration = require('./coloration');
 
@@ -32,6 +33,8 @@ module.exports =
             controlMarkup = '<div id="controls"></div>',
             controls = body.insertBefore(dom.make(controlMarkup),nav),
             form = controls.appendChild(dom.make('<form></form>'));
+
+        details(main);
 
         navigation(body.classList,
                    window,
