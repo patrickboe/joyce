@@ -136,6 +136,7 @@ main {
         -khtml-user-select: none; /* webkit (konqueror) browsers */
         -ms-user-select: none; /* IE10+ */
         cursor: pointer;
+        text-decoration: underline;
 
         .twisty {
           vertical-align: -.3em;
@@ -146,6 +147,7 @@ main {
     }
 
     section.read-more.open {
+      h2 { text-decoration: none; }
       p {
         .shown;
         .page-content;
@@ -398,12 +400,12 @@ body.content {
       }
 
       button {
+        border-radius: 0.2em;
+        box-shadow: 0.2em 0.2em 0.2em #ccc, 0 0 0.2em #ccc;
         color: @color-header;
         margin: 0.2em 0.4em 0 0;
         height: 2.7em;
         width: 7em;
-        border-radius: 0.2em;
-        box-shadow: .2em .2em .2em #aaa, 0 0 .2em #aaa;
         border: none;
         background: white;
       }
