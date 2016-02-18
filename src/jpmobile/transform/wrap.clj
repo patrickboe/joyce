@@ -22,7 +22,7 @@
       [net.cgrand.enlive-html :as en]))
 
 (en/deftemplate joyce-wrap "jpmobile/template/wrap.html"
-  [route title body-tfm]
+  [route title body-tfm head-tfm]
 
   [:title]
   (en/append (str " : " title))
@@ -30,8 +30,11 @@
   [:script]
   (ed/transform-attr :src (route :resource))
 
-  [[:link en/last-of-type]]
+  [[:link (en/attr= :rel "stylesheet") (en/but (en/attr-starts :href "http"))]]
   (ed/transform-attr :href (route :resource))
+
+  [:head]
+  head-tfm
 
   [:body]
   body-tfm)

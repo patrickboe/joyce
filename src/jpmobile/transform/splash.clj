@@ -30,4 +30,5 @@
   (wrap/joyce-wrap route "Home"
       (en/do->
         (en/add-class "home")
-        (en/content (splash-content route) nav))))
+        (en/content (splash-content route) nav))
+      (en/append {:tag :link :attrs {:rel "canonical" :href "http://www.joyceproject.com"}})))

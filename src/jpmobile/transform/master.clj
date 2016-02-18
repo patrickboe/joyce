@@ -28,4 +28,5 @@
       (en/add-class "content")
       (en/content
         nav
-        ((en/wrap "main") (cons {:tag :h1 :content title} main))))))
+        ((en/wrap "main") (cons {:tag :h1 :content title} main))))
+    (en/transformation)))
