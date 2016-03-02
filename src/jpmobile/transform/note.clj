@@ -51,12 +51,14 @@
   (let [situate (situate-image site)
 
         to-fig (fn [[img caption]]
-             { :tag :figure,
-               :content (list
-                          (first (situate img))
-                          (to-caption caption))})
+         (if (= :img (:tag img))
+           [{ :tag :figure,
+                  :content (list
+                             (first (situate img))
+                             (to-caption caption))}]
+           [img caption]))
 
-        to-figures #(map to-fig (partition 2 %))]
+        to-figures (comp flatten #(map to-fig (partition 2 %)))]
 
     (fn [n] (to-figures
               (en/select
