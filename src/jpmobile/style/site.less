@@ -127,7 +127,13 @@ main.colorful {
 }
 
 main {
-    section.brief h2 { .obscure; }
+    section.brief {
+
+      h2 { .obscure; }
+
+      strong { color: #555; }
+
+    }
 
     section.read-more {
       h2 {
@@ -143,12 +149,12 @@ main {
           font-size: 1.5em;
         }
       }
-      p { .obscure; }
+      p, table, dl, dd { .obscure; }
     }
 
     section.read-more.open {
       h2 { text-decoration: none; }
-      p {
+      p, table, dl, dd {
         .shown;
         .page-content;
       }

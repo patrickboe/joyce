@@ -50,13 +50,14 @@
 (defn rewrite-image-section [site]
   (let [situate (situate-image site)
 
-        to-fig (fn [[img caption]]
-         (if (= :img (:tag img))
-           [{ :tag :figure,
-                  :content (list
-                             (first (situate img))
-                             (to-caption caption))}]
-           [img caption]))
+        to-fig (fn [[{itag :tag :as img}
+                     {ctag :tag cattrs :attrs :as caption}]]
+           (if (and (or (= :a itag) (= :img itag)) (= :p ctag))
+             [{ :tag :figure,
+                    :content (list
+                               (first (situate img))
+                               (to-caption caption))}]
+             [img caption]))
 
         to-figures (comp flatten #(map to-fig (partition 2 %)))]
 
