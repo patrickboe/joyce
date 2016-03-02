@@ -25,13 +25,18 @@ module.exports = function(main) {
     },
     applyTwistBehavior = function(block) {
       var header = block.querySelector('h2'),
+      readMore = header.childNodes[0],
+      readLess = dom.make("Read Less"),
       twisty = twistyAfter(header),
       toggleReadMore = function (e) {
         e.preventDefault();
-        twisty.innerHTML =
-          block.classList.toggle('open') ?
-            "expand_less" :
-            "expand_more";
+        if(block.classList.toggle('open')) {
+          header.replaceChild(readLess,readMore);
+          twisty.innerHTML = "expand_less";
+        } else {
+          header.replaceChild(readMore,readLess);
+          twisty.innerHTML = "expand_more";
+        }
       };
       header.addEventListener('click', toggleReadMore);
     },
