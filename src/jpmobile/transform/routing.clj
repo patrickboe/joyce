@@ -17,7 +17,8 @@
 ;;along with jpmobile.  If not, see <http://www.gnu.org/licenses/>.
 ;;
 (ns jpmobile.transform.routing
-  (:require [clojure.string :as st]))
+  (:require
+    [clojure.string :as st]))
 
 (defn path-parts [p]
   (st/split p #"/"))
@@ -26,7 +27,7 @@
   (st/split (last (path-parts path)) #"\."))
 
 (defn extension [path]
-  (second (tokenized-filename path)))
+  (st/lower-case (last (tokenized-filename path))))
 
 (defn docname [path]
   (first (tokenized-filename path)))
@@ -65,14 +66,16 @@
   (if-let [[_ ep img] (re-find #"episode_(\d+)_images/(.+)" url)]
     (let [ [d & r] (path-parts img)
           nudoc (st/join "/" (cons (rename-img-dir d) r)) ]
-      (str "images/for-chapter/" ep "/" nudoc))))
+      (st/lower-case (str "images/for-chapter/" ep "/" nudoc)))))
 
 (defn has-target? [[s t]] t)
 
 (defn route-images [source target]
   (let [rt (reroot-with source target rewrite-img-url)]
-    (fn [paths]
-      (filter has-target? (difmap rt (filter image? paths))))))
+    #(->> %
+      (filter image?)
+      (difmap rt)
+      (filter has-target?))))
 
 (def source-chapters #(str % "/chap/"))
 
