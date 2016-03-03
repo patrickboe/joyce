@@ -20,6 +20,7 @@
                  [org.seleniumhq.selenium/selenium-server "2.44.0"]
                  [org.seleniumhq.webdriver/webdriver-selenium "0.9.7089"]
                  [net.lightbody.bmp/browsermob-core-littleproxy "2.1.0-beta-2"]
+                 [org.clojure/core.match "0.3.0-alpha4"]
                  [clj-webdriver "0.7.2"]
                  [org.clojure/tools.trace "0.7.8"]
                  [enlive "1.1.1"]])

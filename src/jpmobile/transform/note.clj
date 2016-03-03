@@ -18,6 +18,7 @@
 ;;
 (ns jpmobile.transform.note
   (:require
+    [clojure.core.match :refer [match]]
     [jpmobile.transform.edits :as edits]
     [net.cgrand.enlive-html :as en]))
 
@@ -49,17 +50,16 @@
 
 (defn rewrite-image-section [site]
   (let [situate (situate-image site)
+        to-fig #(match [%]
+          [([({:tag (:or :a :img)} :as img)
+             ({:tag :p} :as caption)] :seq)]
+                [{:tag :figure,
+                  :content [(first (situate img))
+                            (to-caption caption)]}]
+          [([{:tag :p} & _] :seq)] []
+          [x] (take 1 x))
 
-        to-fig (fn [[{itag :tag :as img}
-                     {ctag :tag cattrs :attrs :as caption}]]
-           (if (and (or (= :a itag) (= :img itag)) (= :p ctag))
-             [{ :tag :figure,
-                    :content (list
-                               (first (situate img))
-                               (to-caption caption))}]
-             [img caption]))
-
-        to-figures (comp flatten #(map to-fig (partition 2 %)))]
+        to-figures (comp flatten #(map to-fig (partition 2 1 [nil] %)))]
 
     (fn [n] (to-figures
               (en/select
