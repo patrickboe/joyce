@@ -81,7 +81,8 @@
 
 (def source-notes #(str % "/notes/"))
 
-(defn info? [{n :name c :content}] (.endsWith n ".htm"))
+(defn html? [{n :name c :content}]
+  (re-matches #".+\.(html?|asp|php)" n))
 
 (defn people? [{n :name c :content}] (= n "people.php"))
 

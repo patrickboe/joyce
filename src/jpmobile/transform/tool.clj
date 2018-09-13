@@ -44,11 +44,11 @@
      categorize
      (fn [[note-files info-files chapter-files]]
        [
-        note-files
-        (filter rt/info? info-files)
+        (filter rt/html? note-files)
+        (filter rt/html? info-files)
         (filter rt/people? info-files)
         (filter rt/times? info-files)
-        chapter-files
+        (filter rt/html? chapter-files)
         ] )
 
      directions
