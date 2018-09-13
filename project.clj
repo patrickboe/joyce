@@ -1,4 +1,4 @@
-(defproject jpmobile "0.2.3"
+(defproject jpmobile "0.2.4-SNAPSHOT"
   :description "joyceproject.com responsive html redesign"
   :min-lein-version "2.0.0"
   :license {:name "GNU General Public License - Version 3"

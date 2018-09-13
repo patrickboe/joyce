@@ -6,9 +6,7 @@ ZIP="target/jpmobile-${VERSION}.tar.gz"
 echo "creating release"
 lein release
 echo "zipping it up"
-tar -zc -f $ZIP * --exclude $ZIP --exclude 'orig' \
-  --exclude 'src/jpmobile/t*' --exclude 'target/*/' \
-  --exclude 'project.clj'
+tar -zc -f $ZIP *.sh *.txt *.md src target/*.jar
 echo "updating target version for next time"
 grunt version::patch
 lein do vcs commit, vcs push
