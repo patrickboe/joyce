@@ -19,7 +19,7 @@ along with jpmobile.  If not, see <http://www.gnu.org/licenses/>.
 var dom = require('./dom');
 
 module.exports = function(window,form,main){
-  var states=["Unpaged","1922 ed.","1932 ed.","1961 ed.","1986 ed."],
+  var states=["Unpaged","1922 ed.","1932 ed.","1939 ed.","1961 ed.","1986 ed."],
       stateIndex = parseInt(window.sessionStorage.getItem('paginationState')) || 0;
       label = form.appendChild(dom.make('<label for="pagination">Pages:</label>')),
       pageButton = form.appendChild(dom.make('<button id="pagination"></button>')),
