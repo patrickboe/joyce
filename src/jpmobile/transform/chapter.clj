@@ -23,8 +23,10 @@
             [clojure.string :as st]))
 
 (defn cite-page [n]
-  (let [span-id (:id (:attrs n))
-        [_ year page] (re-find #"ed(\d{4})pg(\d+)" span-id)
+  (let [attrs (:attrs n)
+        edition (:data-edition attrs)
+        [_ year] (re-find #"ed(\d{4})" edition)
+        page (:data-page attrs)
         title (str year " ed.")]
     { :tag :cite,
       :content [page],
@@ -68,6 +70,6 @@
             [:p]
             (en/do-> (en/remove-attr :style) (en/remove-class "newchapter"))
 
-            [[:span (en/attr? :id)]]
+            [[:span (en/has-class "page")]]
             cite-page)]
       (comp (partial host title) tfm get-main))))
