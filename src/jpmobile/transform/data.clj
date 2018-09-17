@@ -54,7 +54,7 @@
      [ "Contact Us"
        [
          [ "corrections" "Corrections" ]
-         [ "contributors" "Contribute Notes" ]
+         [ "contributenotes" "Contribute Notes" ]
        ] ]
     ]
    :chapters
