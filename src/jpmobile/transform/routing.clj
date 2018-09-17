@@ -92,7 +92,7 @@
 
 (def source-infos #(str % "/pages/"))
 
-(def source-js #(str % "/swap/"))
+(def source-js #(str % "/scripts/swap/"))
 
 (defn root-relative [url] (str "/" url))
 
